@@ -2,7 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 import hashlib
 
-from src.device import Device
+from src.modules.device import Device
 
 def test_device_creation():
     """Testando a criação de um objeto Device"""
