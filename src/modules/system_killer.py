@@ -1,5 +1,6 @@
 import signal
 
+
 class SystemKiller:
     """Classe para manejar o fim do programa"""
 
@@ -8,12 +9,12 @@ class SystemKiller:
         """Obtém a flag que indica o fim do programa"""
         return self.__kill_now
     
-    def __init__(self) -> None:
+    def __init__(self):
         """Cria um objeto responsável por manejar o fim do programa"""
         self.__kill_now = False
         signal.signal(signal.SIGINT, self.system_kill)
         signal.signal(signal.SIGTERM, self.system_kill)
 
-    def system_kill(self, signum, frame) -> None:
+    def system_kill(self, signum, frame):
         """Define que o programa deve ser encerrado ao receber um comando de interrupção (ctrl + C no terminal) ou término (encerramento do processo)"""
         self.__kill_now = True

@@ -2,8 +2,9 @@ import pytest
 from datetime import datetime, timedelta
 from src.modules.device import Device
 
+
 @pytest.fixture
-def device_instance():
+def device_instance() -> Device:
     """Cria uma instância de Device para uso em testes"""
     mac = "00:11:22:33:44:55"
     first_seen = datetime.now()
