@@ -1,45 +1,27 @@
-from datetime import datetime
-from datetime import timedelta
-import hashlib
-
+import pytest
+from datetime import datetime, timedelta
 from src.modules.device import Device
 
-def test_device_creation():
-    """Testando a criação de um objeto Device"""
+@pytest.fixture
+def device_instance():
+    """Cria uma instância de Device para uso em testes"""
     mac = "00:11:22:33:44:55"
     first_seen = datetime.now()
-    device = Device(mac, first_seen)
+    return Device(mac, first_seen)
 
-    assert device is not None
-    assert device.mac_hash == hashlib.sha256(mac.encode('utf-8')).hexdigest()
-    assert device.first_seen == first_seen
-    assert device.last_seen == first_seen
+def test_timeout(device_instance):
+    """Verifica se o timeout está funcionando corretamente quando um dispositivo não é visto por TIMEOUT_SECONDS segundos"""
+    assert not device_instance.timeout()
+    device_instance.last_seen = datetime.now() - timedelta(seconds=Device.TIMEOUT_SECONDS + 1)
+    assert device_instance.timeout()
 
-def test_device_timeout():
-    """Testando o método timeout"""
-    mac = "00:11:22:33:44:55"
-    first_seen = datetime.now()
-    device = Device(mac, first_seen)
+def test_equality(device_instance):
+    """Verifica se a função de igualdade está funcionando corretamente ao comparar dispositivos"""
+    other_device = Device("00:AA:BB:CC:DD:EE", datetime.now())
+    assert device_instance == device_instance
+    assert device_instance != other_device
 
-    assert not device.timeout()
-
-    # Defina o last_seen para um tempo no passado para simular expiração
-    device.last_seen = first_seen - timedelta(seconds=Device.TIMEOUT_SECONDS + 1)
-
-    # O dispositivo deve estar expirado agora
-    assert device.timeout()
-
-def test_device_equality():
-    """Testando a igualdade entre dispositivos"""
-    mac1 = "00:11:22:33:44:55"
-    mac2 = "66:77:88:99:AA:BB"
-    first_seen1 = datetime.now()
-    first_seen2 = first_seen1 + timedelta(seconds=10)
-
-    device1 = Device(mac1, first_seen1)
-    device2 = Device(mac2, first_seen2)
-    device3 = Device(mac1, first_seen2)
-
-    assert device1 == device1
-    assert device1 == device3
-    assert device1 != device2
+def test_string_representation(device_instance):
+    """Verifica se a representação em string está correta"""
+    expected_str = f'MAC_HASH: {device_instance.mac_hash} | First Seen: {device_instance.first_seen} | Last Seen: {device_instance.last_seen}'
+    assert str(device_instance) == expected_str

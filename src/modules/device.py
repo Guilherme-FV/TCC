@@ -7,7 +7,7 @@ class Device:
     # Quantidade de segundos necessários para que um dispositivo seja considerado fora do ônibus
     TIMEOUT_SECONDS = 300
     
-    def __init__(self, mac, first_seen):
+    def __init__(self, mac, first_seen) -> None:
         """Cria um objeto a partir do endereço MAC do dispositivo e da primeira vez que o dispositivo foi detectado em uma varredura"""
         # Usando SHA256 para anonimizar o endereço MAC
         self.__mac_hash = hashlib.sha256(mac.encode('utf-8')).hexdigest()
@@ -15,14 +15,14 @@ class Device:
         self.__last_seen = first_seen
 
 
-    def timeout(self):
+    def timeout(self) -> bool:
         """Verifica se o dispositivo está fora do ônibus"""
         if(datetime.now() - self.last_seen).total_seconds() > Device.TIMEOUT_SECONDS:
             return True
         return False
     
     @property
-    def mac_hash(self):
+    def mac_hash(self) -> str:
         """Obtém o hash SHA-256 do endereço MAC do dispositivo"""
         return self.__mac_hash
         
@@ -37,7 +37,7 @@ class Device:
         return self.__last_seen
     
     @last_seen.setter
-    def last_seen(self, new_last_seen : datetime):
+    def last_seen(self, new_last_seen : datetime) -> None:
         """Define a última vez que o dispositivo foi detectado em uma varredura"""
         self.__last_seen = new_last_seen
     
