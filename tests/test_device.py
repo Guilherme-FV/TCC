@@ -6,7 +6,7 @@ from src.modules.device import Device
 @pytest.fixture
 def device_instance() -> Device:
     """Cria uma instância de Device para uso em testes"""
-    mac = "00:11:22:33:44:55"
+    mac = '00:11:22:33:44:55'
     first_seen = datetime.now()
     return Device(mac, first_seen)
 
@@ -16,13 +16,18 @@ def test_timeout(device_instance):
     device_instance.last_seen = datetime.now() - timedelta(seconds=Device.TIMEOUT_SECONDS + 1)
     assert device_instance.timeout()
 
+def test_device_to_csv(device_instance):
+    """Verifica se a representação em csv está correta"""
+    expected_representation = f'{device_instance.mac_hash},{device_instance.first_seen.date()},{device_instance.first_seen.strftime("%H:%M:%S")},{device_instance.last_seen.date()},{device_instance.last_seen.strftime("%H:%M:%S")}'
+    assert device_instance.device_to_csv() == expected_representation
+
 def test_equality(device_instance):
     """Verifica se a função de igualdade está funcionando corretamente ao comparar dispositivos"""
-    other_device = Device("00:AA:BB:CC:DD:EE", datetime.now())
+    other_device = Device('00:AA:BB:CC:DD:EE', datetime.now())
     assert device_instance == device_instance
     assert device_instance != other_device
 
 def test_string_representation(device_instance):
     """Verifica se a representação em string está correta"""
-    expected_str = f'MAC_HASH: {device_instance.mac_hash} | First Seen: {device_instance.first_seen} | Last Seen: {device_instance.last_seen}'
-    assert str(device_instance) == expected_str
+    expected_representation = f'MAC_HASH: {device_instance.mac_hash} | First Seen: {device_instance.first_seen} | Last Seen: {device_instance.last_seen}'
+    assert str(device_instance) == expected_representation

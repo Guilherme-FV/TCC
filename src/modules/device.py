@@ -22,6 +22,10 @@ class Device:
             return True
         return False
     
+    def device_to_csv(self) -> [str]:
+        """Retorna a string a ser salva no log de dispositivos após timeout"""
+        return f'{self.__mac_hash},{self.__first_seen.date()},{self.__first_seen.strftime("%H:%M:%S")},{self.__last_seen.date()},{self.__last_seen.strftime("%H:%M:%S")}'
+    
     @property
     def mac_hash(self) -> str:
         """Obtém o hash SHA-256 do endereço MAC do dispositivo"""
