@@ -2,10 +2,10 @@ from datetime import datetime
 from src.modules.device import Device
 from csv import reader
 import src.modules.log_handler as log_handler
-import pytest, os
+import pytest, os, subprocess
 
 DEVICES_AFTER_TIMEOUT_LOG_TEST = os.path.join('tests', 'logs', 'devices_after_timeout_test.csv')
-
+TCPDUMP_LOG_TEST = os.path.join('tests', 'logs', 'tcpdump_test.txt')
 
 @pytest.fixture
 def probe_request_frame() -> str:
@@ -51,3 +51,27 @@ def test_save_devices_after_timeout(device_list):
                     assert line == device_list[3].device_to_csv().split(',')
                 case _:
                     continue
+
+def test_tcpdump_start():
+    """Verifica se a função tcpdump_start está iniciando o processo do tcpdump conforme esperado"""
+    tcp_process = log_handler.tcpdump_start(TCPDUMP_LOG_TEST)
+    assert tcp_process.poll() is None
+    tcp_process.terminate()
+    tcp_process.wait()
+
+    assert os.path.exists(TCPDUMP_LOG_TEST)
+    assert os.path.getsize(TCPDUMP_LOG_TEST) > 0
+    os.remove(TCPDUMP_LOG_TEST)
+
+def test_tcpdump_stop():
+    """Verfica se a função tcpdump_stop está finalizando o processo do tcpdump conforme esperado"""
+    tcp_process = subprocess.Popen(["echo", "Fake tcpdump process"])
+    log_handler.tcpdump_stop(tcp_process, TCPDUMP_LOG_TEST)
+    
+    timestr = datetime.time.strftime('%Y-%m-%d_%H-%M')
+    expected_filename = f'Capture_{timestr}.txt'
+    expected_path = os.path.join(os.path.dirname(TCPDUMP_LOG_TEST), 'dump', expected_filename)
+
+    assert os.path.exists(expected_path)
+    os.remove(expected_path)
+

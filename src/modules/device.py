@@ -1,7 +1,6 @@
 from datetime import datetime
 import hashlib
 
-
 class Device:
     """Classe para criar dispositvos detecdados"""
 
