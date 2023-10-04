@@ -1,4 +1,5 @@
 from datetime import datetime
+import threading
 from src.modules.device import Device
 from csv import reader
 import src.modules.log_handler as log_handler
@@ -75,3 +76,16 @@ def test_tcpdump_stop():
     assert os.path.exists(expected_path)
     os.remove(expected_path)
 
+def test_follow():
+    follow_file = open(TCPDUMP_LOG_TEST, 'r')
+    threading.Thread(target=log_handler.follow)
+    loglines = log_handler.follow(follow_file)
+    threading.Thread(target=write_follow_file)
+    for line in loglines:
+        assert line == "LINHA 1"
+
+def write_follow_file():
+    with open(TCPDUMP_LOG_TEST, 'w') as follow_file:
+        follow_file.write("LINHA 1")
+        follow_file.close()
+        

@@ -1,27 +1,28 @@
 from datetime import datetime
-import hashlib
+from hashlib import sha256
+
 
 class Device:
     """Classe para criar dispositvos detecdados"""
 
     # Quantidade de segundos necessários para que um dispositivo seja considerado fora do ônibus
-    TIMEOUT_SECONDS = 300
+    TIMEOUT_SECONDS = 30
     
     def __init__(self, mac, first_seen):
         """Cria um objeto a partir do endereço MAC do dispositivo e da primeira vez que o dispositivo foi detectado em uma varredura"""
         # Usando SHA256 para anonimizar o endereço MAC
-        self.__mac_hash = hashlib.sha256(mac.encode('utf-8')).hexdigest()
+        self.__mac_hash = sha256(mac.encode('utf-8')).hexdigest()
         self.__first_seen = first_seen
         self.__last_seen = first_seen
 
 
     def timeout(self) -> bool:
         """Verifica se o dispositivo está fora do ônibus"""
-        if(datetime.now() - self.last_seen).total_seconds() > Device.TIMEOUT_SECONDS:
+        if(datetime.now() - self.last_seen).total_seconds() > self.TIMEOUT_SECONDS:
             return True
         return False
     
-    def device_to_csv(self) -> [str]:
+    def device_to_csv(self) -> str:
         """Retorna a string a ser salva no log de dispositivos após timeout"""
         return f'{self.__mac_hash},{self.__first_seen.date()},{self.__first_seen.strftime("%H:%M:%S")},{self.__last_seen.date()},{self.__last_seen.strftime("%H:%M:%S")}'
     

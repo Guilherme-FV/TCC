@@ -1,7 +1,7 @@
-import signal
+from signal import signal, SIGINT, SIGTERM
 
 
-class SystemKiller:
+class System_Killer:
     """Classe para manejar o fim do programa"""
 
     @property
@@ -12,8 +12,8 @@ class SystemKiller:
     def __init__(self):
         """Cria um objeto responsável por manejar o fim do programa"""
         self.__kill_now = False
-        signal.signal(signal.SIGINT, self.system_kill)
-        signal.signal(signal.SIGTERM, self.system_kill)
+        signal(SIGINT, self.system_kill)
+        signal(SIGTERM, self.system_kill)
 
     def system_kill(self, signum, frame):
         """Define que o programa deve ser encerrado ao receber um comando de interrupção (ctrl + C no terminal) ou término (encerramento do processo)"""
