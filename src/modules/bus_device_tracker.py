@@ -13,24 +13,24 @@ from .device import Device
 POSITION_TIMER_SECONDS = 60
 OCUPATION_TIMER_SECONDS = 240
 
-def tcpdump_start(path = TCPDUMP_LOG) -> Popen:
+def tcpdump_start() -> Popen:
     """Inicia o processo do tcpdump direcionando seu output para o arquivo de log"""
-    with open(path, 'w') as tcpdump_log:
+    with open(TCPDUMP_LOG, 'w') as tcpdump_log:
         tcp_args = ['tcpdump', '-i', 'wlan0mon', '-e', '-ttt', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
         tcp_process = Popen(tcp_args, stdout = tcpdump_log, stderr = open(devnull, 'w'))
     return tcp_process
 
-def tcpdump_stop(tcp_process, tcpdump_log_path = TCPDUMP_LOG):
+def tcpdump_stop(tcp_process):
     """Finaliza o processo tcpdump e salva o arquivo atual de captura"""
     tcp_process.send_signal(SIGTERM)
     tcp_process.communicate()
 
     timestr = strftime('%Y-%m-%d_%H-%M')
     dump_filename = f'Capture_{timestr}.txt'
-    dump_full_path = path.join(path.dirname(tcpdump_log_path), 'dump', dump_filename)
+    dump_full_path = path.join(path.dirname(TCPDUMP_LOG), 'dump', dump_filename)
     
     try:
-        move(tcpdump_log_path, dump_full_path)
+        move(TCPDUMP_LOG, dump_full_path)
     except IOError:
         pass
 

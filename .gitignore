@@ -156,5 +156,4 @@ cython_debug/
 .vscode/
 
 # Desnecessárias
-logs/
 tests/logs/

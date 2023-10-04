@@ -10,7 +10,7 @@ from modules.bus_device_tracker import get_bus_ocupation, live_device_scanner, p
 if __name__ == "__main__":
     """Início do programa"""
     killer = System_Killer()
-
+          
     if not path.exists(path.dirname(TCPDUMP_LOG)):
         try:
             makedirs(path.dirname(TCPDUMP_LOG))
