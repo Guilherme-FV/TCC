@@ -1,10 +1,10 @@
-from signal import SIGTERM
-from subprocess import Popen
-from os import devnull, path
 from shutil import move
 from time import sleep, strftime
 from datetime import datetime
 from hashlib import sha256
+from os import devnull
+from subprocess import Popen
+from signal import SIGTERM
 
 from .log_handler import *
 from .device import Device
@@ -17,13 +17,13 @@ def tcpdump_start() -> Popen:
     """Inicia o processo do tcpdump direcionando seu output para o arquivo de log"""
     with open(TCPDUMP_LOG, 'w') as tcpdump_log:
         tcp_args = ['tcpdump', '-i', 'wlan0mon', '-e', '-ttt', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
-        tcp_process = Popen(tcp_args, stdout = tcpdump_log, stderr = open(devnull, 'w'))
-    return tcp_process
+        tcpdump_process = Popen(tcp_args, stdout = tcpdump_log, stderr = open(devnull, 'w'))
+    return tcpdump_process
 
-def tcpdump_stop(tcp_process):
+def tcpdump_stop(tcpdump_process):
     """Finaliza o processo tcpdump e salva o arquivo atual de captura"""
-    tcp_process.send_signal(SIGTERM)
-    tcp_process.communicate()
+    tcpdump_process.send_signal(SIGTERM)
+    tcpdump_process.communicate()
 
     timestr = strftime('%Y-%m-%d_%H-%M')
     dump_filename = f'Capture_{timestr}.txt'
@@ -37,9 +37,9 @@ def tcpdump_stop(tcp_process):
 def live_device_scanner(enter_devices):
     """Varre constantemente o arquivo de log do tcpdump e cadastra/atualiza os dispositivos dentro do ônibus"""
     loglines = follow_tcpdump_log()
-    tcpdump_process = tcpdump_start()
+    tcpdump_process =  tcpdump_start()
 
-    for line in loglines:        
+    for line in loglines:
         frame = extract_probe_request_frame(line)
         if frame:
             frame_mac_hash = sha256(frame[0].encode('utf-8')).hexdigest()
@@ -49,10 +49,14 @@ def live_device_scanner(enter_devices):
             else:
                 new_device = Device(frame[0], frame[1])
                 enter_devices[new_device.mac_hash] = new_device
+    tcpdump_stop(tcpdump_process)
 
 def position_ping():
     """Obtém a localização e o datetime atual e envia as informações para o banco de dados"""
+    killer = System_Killer()
     while True:
+        if killer.kill_now:
+            exit(0)
         sleep(POSITION_TIMER_SECONDS)
         # Pega latitude e longitude do GPS
         actual_datetime = datetime.now()
@@ -67,7 +71,10 @@ def live_devices_cleanup(enter_devices, exit_devices):
 
 def get_bus_ocupation(enter_devices, exit_devices):
     """Envia para o banco de dados a lotação atual do ônibus"""
+    killer = System_Killer()
     while True:
+        if killer.kill_now:
+            exit(0)
         sleep(OCUPATION_TIMER_SECONDS)
         live_devices_cleanup(enter_devices, exit_devices)
         bus_ocupation = len(enter_devices) - len(exit_devices)

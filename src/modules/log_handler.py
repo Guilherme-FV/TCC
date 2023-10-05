@@ -1,6 +1,9 @@
 from datetime import datetime
 from os import path
 from time import sleep
+from os import path
+
+from .system_killer import System_Killer
 
 
 TCPDUMP_LOG = path.join('logs', 'tcpdump.txt')
@@ -24,11 +27,14 @@ def extract_probe_request_frame(probe_request_frame):
 
 def follow_tcpdump_log():
     """Função que captura inserções conforme alimentadas no log"""
+    killer = System_Killer()
     log_file = open(TCPDUMP_LOG, 'r')
     log_file.seek(0,2)
     while True:
         line = log_file.readline()
         if not line:
             sleep(0.1)
+            if killer.kill_now:
+                return
             continue
         yield line
