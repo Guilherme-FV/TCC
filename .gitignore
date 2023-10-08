@@ -154,6 +154,7 @@ cython_debug/
 
 # Visual Studio Code
 .vscode/
+TCC.code-workspace
 
 # Desnecessárias
 tests/logs/
