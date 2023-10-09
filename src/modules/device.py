@@ -8,12 +8,14 @@ class Device:
     # Quantidade de segundos necessários para que um dispositivo seja considerado fora do ônibus
     TIMEOUT_SECONDS = 30
     
-    def __init__(self, mac, first_seen):
+    def __init__(self, mac, first_seen, first_seen_position):
         """Cria um objeto a partir do endereço MAC do dispositivo e da primeira vez que o dispositivo foi detectado em uma varredura"""
         # Usando SHA256 para anonimizar o endereço MAC
         self.__mac_hash = sha256(mac.encode('utf-8')).hexdigest()
         self.__first_seen = first_seen
         self.__last_seen = first_seen
+        self.__first_seen_position = first_seen_position
+        self.__last_seen_position = first_seen_position
 
 
     def timeout(self) -> bool:
@@ -22,9 +24,18 @@ class Device:
             return True
         return False
     
-    def device_to_csv(self) -> str:
-        """Retorna a string a ser salva no log de dispositivos após timeout"""
-        return f'{self.__mac_hash},{self.__first_seen.date()},{self.__first_seen.strftime("%H:%M:%S")},{self.__last_seen.date()},{self.__last_seen.strftime("%H:%M:%S")}'
+    def device_to_JSON(self) -> str:
+        """Retorna todos os atributos do dispositivo em formato JSON"""
+        attributes = {
+            'mac_hash': self.__mac_hash,
+            'entrada': str(self.__first_seen.strftime("%H:%M:%S")),
+            'saida': str(self.__last_seen.strftime("%H:%M:%S")),
+            'data_entrada': str(self.__first_seen.date()),
+            'data_saida': str(self.__last_seen.date()),
+            'posicao_entrada': str(self.__first_seen_position),
+            'posicao_saida': str(self.__last_seen_position)
+        }
+        return attributes 
     
     @property
     def mac_hash(self) -> str:
@@ -45,6 +56,22 @@ class Device:
     def last_seen(self, new_last_seen : datetime):
         """Define a última vez que o dispositivo foi detectado em uma varredura"""
         self.__last_seen = new_last_seen
+
+    @property
+    def first_seen_position(self) -> str:
+        """Obtém a localização da primeira vez que o dispositivo foi detectado em uma varredura"""
+        return self.__first_seen_position
+    
+    @property
+    def last_seen_position(self) -> str:
+        """Obtém a localização da última vez que o dispositivo foi detectado em uma varredura"""
+        return self.__last_seen_position
+    
+    @last_seen_position.setter
+    def last_seen_position(self, new_last_seen_position : str):
+        """Define a última vez que o dispositivo foi detectado em uma varredura"""
+        self.__last_seen_position = new_last_seen_position
+    
     
     def __str__(self) -> str:
         """Retorna uma representação em string do objeto"""
