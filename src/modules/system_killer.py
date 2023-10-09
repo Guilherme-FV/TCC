@@ -15,6 +15,6 @@ class System_Killer:
         signal(SIGINT, self.system_kill)
         signal(SIGTERM, self.system_kill)
 
-    def system_kill(self, signum, frame):
+    def system_kill(self, _signum, _frame):
         """Define que o programa deve ser encerrado ao receber um comando de interrupção (ctrl + C no terminal) ou término (encerramento do processo)"""
         self.__kill_now = True

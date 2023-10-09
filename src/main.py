@@ -2,13 +2,12 @@ from datetime import datetime
 from errno import EEXIST
 from os import makedirs, path
 from multiprocessing import Manager, Process
-from sys import exit
+import sys
 
 import modules
 
 
 if __name__ == "__main__":
-    """Início do programa"""
     killer = modules.System_Killer()
           
     if not path.exists(path.dirname(modules.TCPDUMP_LOG)):
@@ -34,19 +33,18 @@ if __name__ == "__main__":
     position_tracker.start()
     ocupation_tracker.start()
 
-    while True:
-        if killer.kill_now:
-            print('TERMINANDO O PROGRAMA')
-            device_scanner.terminate()
-            print('TERMINANDO O DEVICE')
-            device_scanner.join()
-            print('DEVICE JOIN')
-            position_tracker.terminate()
-            print('TERMINANDO O POSITION')
-            position_tracker.join()
-            print('POSITION JOIN')
-            ocupation_tracker.terminate()
-            print('TERMINANDO O OCUPATION')
-            ocupation_tracker.join()
-            print('OCUPATION JOIN')
-            exit(0)
+    while not killer.kill_now:
+        print('TERMINANDO O PROGRAMA')
+        device_scanner.terminate()
+        print('TERMINANDO O DEVICE')
+        device_scanner.join()
+        print('DEVICE JOIN')
+        position_tracker.terminate()
+        print('TERMINANDO O POSITION')
+        position_tracker.join()
+        print('POSITION JOIN')
+        ocupation_tracker.terminate()
+        print('TERMINANDO O OCUPATION')
+        ocupation_tracker.join()
+        print('OCUPATION JOIN')
+        sys.exit(0)
