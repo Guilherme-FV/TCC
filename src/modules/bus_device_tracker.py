@@ -14,7 +14,6 @@ from modules.device import Device
 from modules.mqtt_client_handler import publish_position, publish_num_passengers
 
 
-
 POSITION_TIMER_SECONDS = 60
 OCUPATION_TIMER_SECONDS = 240
 
