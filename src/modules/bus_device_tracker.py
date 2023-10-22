@@ -20,7 +20,7 @@ OCUPATION_TIMER_SECONDS = 240
 def tcpdump_start() -> Popen:
     """Inicia o processo do tcpdump direcionando seu output para o arquivo de log"""
     with open(TCPDUMP_LOG, 'w', encoding='utf-8') as tcpdump_log:
-        tcp_args = ['tcpdump', '-i', 'wlan0mon', '-e', '-ttt', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
+        tcp_args = ['tcpdump', '-i', 'wlan1', '-e', '-ttt', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
         with Popen(tcp_args, stdout = tcpdump_log, stderr = open(devnull, 'w', encoding='utf-8')) as tcpdump_process:
             return tcpdump_process
 

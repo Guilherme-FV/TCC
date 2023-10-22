@@ -4,7 +4,7 @@ import json
 from modules.device import Device
 from modules.position import Postion
 
-RECEIVING_MODULE_IP = '54.207.195.3'
+RECEIVING_MODULE_IP = '15.229.35.41'
 COLLECTION_MODULE_IP = 'localhost'
 
 def publish_message(broker: str, topic: str, message: str, qos: int):
@@ -15,12 +15,12 @@ def publish_message(broker: str, topic: str, message: str, qos: int):
     client.publish(topic, message, qos)
     client.disconnect()
 
-def publish_position(position: Postion):   
+def publish_position(latitude: str, longitude: str, gps_date: datetime, gps_time: datetime):   
     position_package = {
-        'latitude': position.latitude,
-        'longitude': position.latitude,
-        'data': position.gps_date,
-        'tempo': position.gps_time
+        'latitude': latitude,
+        'longitude': latitude,
+        'data': gps_date,
+        'tempo': gps_time
     }
     publish_message(RECEIVING_MODULE_IP, 'position', json.dumps(position_package), 0)
 
