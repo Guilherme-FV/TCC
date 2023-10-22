@@ -19,16 +19,19 @@ OCUPATION_TIMER_SECONDS = 240
 
 def tcpdump_start() -> Popen:
     """Inicia o processo do tcpdump direcionando seu output para o arquivo de log"""
-    with open(TCPDUMP_LOG, 'w', encoding='utf-8') as tcpdump_log:
-        tcp_args = ['tcpdump', '-i', 'wlan1', '-e', '-ttt', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
-        with Popen(tcp_args, stdout = tcpdump_log, stderr = open(devnull, 'w', encoding='utf-8')) as tcpdump_process:
-            print(f'início do TCPDUMP{tcpdump_process}')
-            return tcpdump_process
+    tcp_args = ['tcpdump', '-i', 'wlan1', '-e', '-ttt', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
+    with Popen(tcp_args, stdout = open(TCPDUMP_LOG, 'w', encoding='utf-8'), stderr = open(devnull, 'w', encoding='utf-8')) as tcpdump_process:
+        if tcpdump_process.poll() is None:
+            print("O processo está em execução.")
+        return tcpdump_process
 
 def tcpdump_stop(tcpdump_process: Popen):
     """Finaliza o processo tcpdump e salva o arquivo atual de captura"""
     tcpdump_process.send_signal(SIGTERM)
     tcpdump_process.communicate()
+
+    if tcpdump_process.poll() is not None:
+        print("O processo está terminado.")
 
     timestr = strftime('%Y-%m-%d_%H-%M')
     dump_filename = f'Capture_{timestr}.txt'
