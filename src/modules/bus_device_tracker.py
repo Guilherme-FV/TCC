@@ -22,6 +22,7 @@ def tcpdump_start() -> Popen:
     with open(TCPDUMP_LOG, 'w', encoding='utf-8') as tcpdump_log:
         tcp_args = ['tcpdump', '-i', 'wlan1', '-e', '-ttt', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
         with Popen(tcp_args, stdout = tcpdump_log, stderr = open(devnull, 'w', encoding='utf-8')) as tcpdump_process:
+            print(f'início do TCPDUMP{tcpdump_process}')
             return tcpdump_process
 
 def tcpdump_stop(tcpdump_process: Popen):
