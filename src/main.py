@@ -33,6 +33,8 @@ if __name__ == "__main__":
     position_tracker.start()
     ocupation_tracker.start()
 
+    print('EXECUTANDO PROGRAMA')
+    
     while True:
         while killer.kill_now:
             print('TERMINANDO O PROGRAMA')

@@ -19,16 +19,16 @@ def publish_position(latitude: str, longitude: str, gps_date: datetime, gps_time
     position_package = {
         'latitude': latitude,
         'longitude': latitude,
-        'data': gps_date,
-        'tempo': gps_time
+        'data': str(gps_date),
+        'tempo': str(gps_time)
     }
     publish_message(RECEIVING_MODULE_IP, 'position', json.dumps(position_package), 0)
 
 def publish_num_passengers(num_passengers: int, date_time: datetime):
     num_passengers_package = {
         'lotacao': num_passengers,
-        'data': date_time.date(),
-        'tempo': date_time.time()
+        'data': str(date_time.date()),
+        'tempo': str(date_time.time())
     }
     publish_message(RECEIVING_MODULE_IP, 'num_passengers', json.dumps(num_passengers_package), 0)
 

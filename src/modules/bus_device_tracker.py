@@ -15,15 +15,12 @@ from modules.mqtt_client_handler import publish_position, publish_num_passengers
 
 
 POSITION_TIMER_SECONDS = 60
-OCUPATION_TIMER_SECONDS = 240
+OCUPATION_TIMER_SECONDS = 90
 
 def tcpdump_start() -> Popen:
     """Inicia o processo do tcpdump direcionando seu output para o arquivo de log"""
-    tcp_args = ['tcpdump', '-i', 'wlan1', '-e', '-ttt', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
-    with Popen(tcp_args, stdout = open(TCPDUMP_LOG, 'w', encoding='utf-8'), stderr = open(devnull, 'w', encoding='utf-8')) as tcpdump_process:
-        if tcpdump_process.poll() is None:
-            print("O processo está em execução.")
-        return tcpdump_process
+    tcp_args = ['sudo', 'tcpdump', '-i', 'wlan1', '-e', '-U', 'wlan[0]=0x80', 'or', 'wlan[0]=0x40', 'or', 'wlan[0]=0x50']
+    return Popen(tcp_args, stdout = open(TCPDUMP_LOG, 'w', encoding='utf-8'), stderr = open(devnull, 'w', encoding='utf-8'))
 
 def tcpdump_stop(tcpdump_process: Popen):
     """Finaliza o processo tcpdump e salva o arquivo atual de captura"""
