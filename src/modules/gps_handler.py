@@ -9,12 +9,17 @@ class GPSHandler:
 
     def __init__(self):
         self.__status = 'V'
+        self.__latitude = ''
+        self.__longitude = ''
+        self.__timestamp = ''
+        self.__datestamp = ''
         self.__gps_process = Process(target=self.update_data)
         self.gps_process.start()
 
     def update_data(self):
         while True:
             serial_line = self.GPS_SERIAL.readline().decode('latin-1')
+            print(serial_line)
             if serial_line.startswith('$GPRMC'):
                 gps_data = parse(serial_line)
                 self.__status = gps_data.status
