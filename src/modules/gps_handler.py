@@ -27,7 +27,7 @@ class GPSHandler:
                     self.__latitude = gps_data.latitude
                     self.__longitude = gps_data.longitude
                     self.__timestamp = gps_data.timestamp
-                    self.__datestamp = gps_data.date
+                    self.__datestamp = gps_data.datestamp
 
     @property
     def gps_process(self) -> Process:
