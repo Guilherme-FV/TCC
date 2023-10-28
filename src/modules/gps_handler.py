@@ -9,6 +9,10 @@ class GPSHandler:
 
     def __init__(self):
         self.__status = 'V'
+        self.__latitude = ''
+        self.__longitude = ''
+        self.__timestamp = ''
+        self.__datestamp = ''
         self.__gps_process = Process(target=self.update_data)
         self.gps_process.start()
 
