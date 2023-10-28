@@ -8,7 +8,7 @@ class GPSHandler:
     GPS_SERIAL = Serial("/dev/ttyAMA0", baudrate=9600, timeout=0.5)
 
     def __init__(self):
-        self.update_data()
+        self.__status = 'V'
         self.__gps_process = Process(target=self.update_data)
         self.gps_process.start()
 
@@ -22,7 +22,7 @@ class GPSHandler:
                     self.__latitude = gps_data.latitude
                     self.__longitude = gps_data.longitude
                     self.__timestamp = gps_data.timestamp
-                    self.__datestamp = gps_data.datestamp
+                    self.__datestamp = gps_data.date
 
     @property
     def gps_process(self) -> Process:
