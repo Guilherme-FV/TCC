@@ -61,7 +61,7 @@ def extract_probe_request_frame(probe_request_frame: str):
 
 def tcpdump_start() -> subprocess.Popen:
     """Inicia o processo do tcpdump direcionando seu output para o arquivo de log"""
-    tcp_args = ['sudo', 'tcpdump', '-i', 'eth0', '-e', '-U']
+    tcp_args = ['sudo', 'tcpdump', '-i', 'wlan1', '-e', '-tttt', '-U', 'wlan[0]=0x40']
     return subprocess.Popen(tcp_args, stdout = open(TCPDUMP_LOG, 'w', encoding='utf-8'), stderr = open(devnull, 'w', encoding='utf-8'))
 
 
