@@ -13,7 +13,7 @@ class GPSHandler:
 
     def update_data(self):
         while True:
-            serial_line = self.GPS_SERIAL.readline().decode('utf-8')
+            serial_line = self.GPS_SERIAL.readline().decode('latin-1')
             if serial_line.startswith('$GPRMC'):
                 gps_data = parse(serial_line)
                 self.__status = gps_data.status
