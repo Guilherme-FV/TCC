@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from serial import Serial
 from pynmea2 import parse
 from multiprocessing import Process
@@ -9,47 +10,38 @@ class GPSHandler:
         self.__status = 'V'
         self.__latitude = ''
         self.__longitude = ''
-        self.__timestamp = ''
-        self.__datestamp = ''
+        self.__datetime = ''
 
     @property
-    def latitude(self) -> str:
+    def latitude(self) -> float:
         return self.__latitude
     
     @latitude.setter
-    def latitude(self, new_latitude):
+    def latitude(self, new_latitude: float):
         self.__latitude = new_latitude
     
     @property
-    def longitude(self) -> str:
+    def longitude(self) -> float:
         return self.__longitude
     
     @longitude.setter
-    def longitude(self, new_longitude):
+    def longitude(self, new_longitude: float):
         self.__longitude = new_longitude
     
     @property
-    def timestamp(self) -> str:
-        return self.__timestamp
+    def datetime(self) -> datetime:
+        return self.__datetime
     
-    @timestamp.setter
-    def timestamp(self, new_timestamp):
-        self.__timestamp = new_timestamp
-    
-    @property
-    def datestamp(self) -> str:
-        return self.__datestamp
-    
-    @datestamp.setter
-    def datestamp(self, new_datestamp):
-        self.__datestamp = new_datestamp
+    @datetime.setter
+    def datetime(self, new_datetime: datetime):
+        self.__datetime = new_datetime
     
     @property
     def status(self) -> bool:
         return self.__status == 'A'
     
     @status.setter
-    def status(self, new_status):
+    def status(self, new_status: str):
         self.__status = new_status
 
     def __str__(self) -> str:
@@ -66,6 +58,5 @@ def get_gps_data():
                 if gps_data.status:
                     gps_data.latitude = parsed_sentance.latitude
                     gps_data.longitude = parsed_sentance.longitude
-                    gps_data.timestamp = parsed_sentance.timestamp
-                    gps_data.datestamp = parsed_sentance.datestamp
+                    gps_data.datetime = datetime.combine(parsed_sentance.datestamp, parsed_sentance.timestamp) - timedelta(hours = 3)
                 return gps_data
