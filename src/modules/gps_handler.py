@@ -45,7 +45,7 @@ class GPSHandler:
         self.__status = new_status
 
     def __str__(self) -> str:
-        return f'Latitude: {self.latitude}, Longitude: {self.longitude}, Timestamp: {self.timestamp}, Datestamp: {self.datestamp}, Status: {self.status}'
+        return f'Latitude: {self.latitude}, Longitude: {self.longitude}, Datetime: {self.datetime} Status: {self.status}'
 
 def get_gps_data():
         gps_data = GPSHandler()
