@@ -8,6 +8,7 @@ class GPSHandler:
     GPS_SERIAL = Serial("/dev/ttyAMA0", baudrate=9600, timeout=0.5)
 
     def __init__(self):
+        self.update_data(self)
         self.__gps_process = Process(target=self.update_data)
         self.gps_process.start()
 
