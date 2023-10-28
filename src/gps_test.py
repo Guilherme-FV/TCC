@@ -1,6 +1,15 @@
-from modules.gps_handler import GPSHandler
+import serial
+import pynmea2
 
-gps_handler = GPSHandler()
-
-# while True:
-#         print(f'Latitude: {gps_handler.latitude}, Longitude: {gps_handler.longitude}, Hora: {gps_handler.timestamp}, Data: {gps_handler.datestamp}')
+while True:
+        port="/dev/ttyAMA0"
+        ser=serial.Serial(port, baudrate=9600, timeout=0.5)
+        dataout = pynmea2.NMEAStreamReader()
+        newdata=ser.readline()
+        n_data = newdata.decode('latin-1')
+        if n_data.startswith('$GPRMC'):
+                newmsg=pynmea2.parse(n_data)
+                lat=newmsg.latitude
+                lng=newmsg.longitude
+                gps = "Latitude=" + str(lat) + " and Longitude=" + str(lng)
+                print(newmsg)
