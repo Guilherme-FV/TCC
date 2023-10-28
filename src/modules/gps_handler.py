@@ -57,14 +57,15 @@ class GPSHandler:
 
 def get_gps_data():
         gps_data = GPSHandler()
+        gps_serial = Serial("/dev/ttyAMA0", baudrate=9600, timeout=0.5)
         while True:
-            serial_line = Serial("/dev/ttyAMA0", baudrate=9600, timeout=0.5)
-            if serial_line.startswith('$GPRMC'):
-                parsed_line = parse(serial_line)
-                gps_data.status = parsed_line.status
+            nmea_sentence = gps_serial.readline().decode('latin-1')
+            if nmea_sentence.startswith('$GPRMC'):
+                parsed_sentance = parse(nmea_sentence)
+                gps_data.status = parsed_sentance.status
                 if gps_data.status:
-                    gps_data.latitude = parsed_line.latitude
-                    gps_data.longitude = parsed_line.longitude
-                    gps_data.timestamp = parsed_line.timestamp
-                    gps_data.datestamp = parsed_line.datestamp
+                    gps_data.latitude = parsed_sentance.latitude
+                    gps_data.longitude = parsed_sentance.longitude
+                    gps_data.timestamp = parsed_sentance.timestamp
+                    gps_data.datestamp = parsed_sentance.datestamp
                 return gps_data
