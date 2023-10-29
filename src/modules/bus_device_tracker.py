@@ -28,9 +28,6 @@ def tcpdump_stop(tcpdump_process: Popen):
     tcpdump_process.send_signal(SIGTERM)
     tcpdump_process.communicate()
 
-    if tcpdump_process.poll() is not None:
-        print("O processo está terminado.")
-
     timestr = strftime('%Y-%m-%d_%H-%M')
     dump_filename = f'Capture_{timestr}.txt'
     dump_full_path = path.join(path.dirname(TCPDUMP_LOG), 'dump', dump_filename)
@@ -52,9 +49,11 @@ def live_device_scanner(enter_devices: dict[str, Device]):
             if frame_mac_hash in enter_devices:
                 live_device = enter_devices[frame_mac_hash]
                 live_device.seen()
+                print(f'DISPOSITIVO: {frame[0]} VISTO NOVAMENTE')
             else:
                 new_device = Device(frame[0], frame[1])
                 enter_devices[new_device.mac_hash] = new_device
+                print(f'NOVO DISPOSITIVO: {frame[0]}')
     tcpdump_stop(tcpdump_process)
 
 def position_ping():
@@ -78,6 +77,7 @@ def live_devices_cleanup(enter_devices: dict[str, Device], exit_devices: dict[st
     for device in enter_devices.values():
         if device.timeout():
             exit_devices[device.mac_hash] = device
+            print(f'DISPOSITIVO: {device.mac_hash} REMOVIDO')
             # Enviar infos para o banco de dados (assync de preferência)
 
 def get_bus_ocupation(enter_devices: dict[str, Device], exit_devices: dict[str, Device]):

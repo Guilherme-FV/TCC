@@ -15,7 +15,7 @@ class Device:
         self.__mac_hash = sha256(mac.encode('utf-8')).hexdigest()
         self.__first_seen = first_seen
         self.__last_seen = first_seen
-        self.__first_seen_position = get_gps_data()
+        self.__first_seen_position = GPSHandler()#get_gps_data()
         self.__last_seen_position = self.first_seen_position
 
 
@@ -40,7 +40,7 @@ class Device:
     
     def seen(self):
         self.last_seen = datetime.now()
-        self.last_seen_position = get_gps_data()
+        self.last_seen_position = GPSHandler()#get_gps_data()
     
     @property
     def mac_hash(self) -> str:
