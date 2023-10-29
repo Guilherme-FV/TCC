@@ -7,6 +7,7 @@ from subprocess import Popen
 from signal import SIGTERM
 from multiprocessing import Manager
 import sys
+from modules.gps_handler import get_gps_data
 
 from modules.system_killer import System_Killer
 from modules.log_handler import TCPDUMP_LOG, follow_tcpdump_log, extract_probe_request_frame
@@ -39,7 +40,7 @@ def tcpdump_stop(tcpdump_process: Popen):
     except IOError:
         pass
 
-def live_device_scanner(enter_devices: Manager().dict()):
+def live_device_scanner(enter_devices: dict[str, Device]):
     """Varre constantemente o arquivo de log do tcpdump e cadastra/atualiza os dispositivos dentro do ônibus"""
     loglines = follow_tcpdump_log()
     tcpdump_process =  tcpdump_start()
@@ -50,9 +51,9 @@ def live_device_scanner(enter_devices: Manager().dict()):
             frame_mac_hash = sha256(frame[0].encode('utf-8')).hexdigest()
             if frame_mac_hash in enter_devices:
                 live_device = enter_devices[frame_mac_hash]
-                live_device.last_seen = datetime.now()
+                live_device.seen()
             else:
-                new_device = Device(frame[0], frame[1], 'first_seen_position')
+                new_device = Device(frame[0], frame[1])
                 enter_devices[new_device.mac_hash] = new_device
     tcpdump_stop(tcpdump_process)
 
@@ -60,27 +61,39 @@ def position_ping():
     """Obtém a localização e o datetime atual e envia as informações para o banco de dados"""
     killer = System_Killer()
     while True:
-        if killer.kill_now:
-            sys.exit(0)
-        sleep(POSITION_TIMER_SECONDS)
-        # Pega latitude e longitude do GPS
-        actual_datetime = datetime.now()
-        publish_position('latitude', 'longitude', actual_datetime.date(), actual_datetime.time())
+        try:
+            if killer.kill_now:
+                sys.exit(0)
+            sleep(POSITION_TIMER_SECONDS)
+            gps_data = get_gps_data()
+            publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
+        except KeyboardInterrupt:
+            gps_data = get_gps_data()
+            publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
+            if killer.kill_now:
+                sys.exit(0)
 
-def live_devices_cleanup(enter_devices: Manager().dict(), exit_devices: Manager().dict()):
+def live_devices_cleanup(enter_devices: dict[str, Device], exit_devices: dict[str, Device]):
     """Verifica dispositivos que não são vistos a muito tempo e adiciona-os a lista dos que saíram do ônibus"""
     for device in enter_devices.values():
         if device.timeout():
             exit_devices[device.mac_hash] = device
             # Enviar infos para o banco de dados (assync de preferência)
 
-def get_bus_ocupation(enter_devices: Manager().dict(), exit_devices: Manager().dict()):
+def get_bus_ocupation(enter_devices: dict[str, Device], exit_devices: dict[str, Device]):
     """Envia para o banco de dados a lotação atual do ônibus"""
     killer = System_Killer()
     while True:
-        if killer.kill_now:
-            sys.exit(0)
-        sleep(OCUPATION_TIMER_SECONDS)
-        live_devices_cleanup(enter_devices, exit_devices)
-        bus_ocupation = len(enter_devices) - len(exit_devices)
-        publish_num_passengers(bus_ocupation, datetime.now())
+        try:
+            if killer.kill_now:
+                sys.exit(0)
+            sleep(OCUPATION_TIMER_SECONDS)
+            live_devices_cleanup(enter_devices, exit_devices)
+            bus_ocupation = len(enter_devices) - len(exit_devices)
+            publish_num_passengers(bus_ocupation, datetime.now())
+        except KeyboardInterrupt:
+            live_devices_cleanup(enter_devices, exit_devices)
+            bus_ocupation = len(enter_devices) - len(exit_devices)
+            publish_num_passengers(bus_ocupation, datetime.now())
+            if killer.kill_now:
+                sys.exit(0)

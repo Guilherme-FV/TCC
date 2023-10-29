@@ -2,7 +2,6 @@ from datetime import datetime
 import paho.mqtt.client as paho
 import json
 from modules.device import Device
-from modules.position import Postion
 
 RECEIVING_MODULE_IP = '15.229.35.41'
 COLLECTION_MODULE_IP = 'localhost'
@@ -15,12 +14,12 @@ def publish_message(broker: str, topic: str, message: str, qos: int):
     client.publish(topic, message, qos)
     client.disconnect()
 
-def publish_position(latitude: str, longitude: str, gps_date: datetime, gps_time: datetime):   
+def publish_position(latitude: float, longitude: float, gps_datetime: datetime):   
     position_package = {
-        'latitude': latitude,
-        'longitude': latitude,
-        'data': str(gps_date),
-        'tempo': str(gps_time)
+        'latitude': str(latitude),
+        'longitude': str(longitude),
+        'data': str(gps_datetime.date()),
+        'tempo': str(gps_datetime.time())
     }
     publish_message(RECEIVING_MODULE_IP, 'position', json.dumps(position_package), 0)
 

@@ -8,9 +8,9 @@ class GPSHandler:
 
     def __init__(self):
         self.__status = 'V'
-        self.__latitude = ''
-        self.__longitude = ''
-        self.__datetime = ''
+        self.__latitude = 0
+        self.__longitude = 0
+        self.__date_time = datetime.now()
 
     @property
     def latitude(self) -> float:
@@ -29,12 +29,12 @@ class GPSHandler:
         self.__longitude = new_longitude
     
     @property
-    def datetime(self) -> datetime:
-        return self.__datetime
+    def date_time(self) -> datetime:
+        return self.__date_time
     
-    @datetime.setter
-    def datetime(self, new_datetime: datetime):
-        self.__datetime = new_datetime
+    @date_time.setter
+    def date_time(self, new_datetime: datetime):
+        self.__date_time = new_datetime
     
     @property
     def status(self) -> bool:
@@ -45,9 +45,9 @@ class GPSHandler:
         self.__status = new_status
 
     def __str__(self) -> str:
-        return f'Latitude: {self.latitude}, Longitude: {self.longitude}, Datetime: {self.datetime} Status: {self.status}'
+        return f'Latitude: {self.latitude}, Longitude: {self.longitude}, Datetime: {self.date_time} Status: {self.status}'
 
-def get_gps_data():
+def get_gps_data() -> GPSHandler:
         gps_data = GPSHandler()
         gps_serial = Serial("/dev/ttyAMA0", baudrate=9600, timeout=0.5)
         while True:
@@ -58,5 +58,5 @@ def get_gps_data():
                 if gps_data.status:
                     gps_data.latitude = parsed_sentance.latitude
                     gps_data.longitude = parsed_sentance.longitude
-                    gps_data.datetime = datetime.combine(parsed_sentance.datestamp, parsed_sentance.timestamp) - timedelta(hours = 3)
+                    gps_data.date_time = datetime.combine(parsed_sentance.datestamp, parsed_sentance.timestamp) - timedelta(hours = 3)
                 return gps_data
