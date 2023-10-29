@@ -15,8 +15,8 @@ from modules.device import Device
 from modules.mqtt_client_handler import publish_position, publish_num_passengers
 
 
-POSITION_TIMER_SECONDS = 60
-OCUPATION_TIMER_SECONDS = 90
+POSITION_TIMER_SECONDS = 30
+OCUPATION_TIMER_SECONDS = 45
 
 def tcpdump_start() -> Popen:
     """Inicia o processo do tcpdump direcionando seu output para o arquivo de log"""
@@ -75,10 +75,11 @@ def position_ping():
 def live_devices_cleanup(enter_devices: dict[str, Device], exit_devices: dict[str, Device]):
     """Verifica dispositivos que não são vistos a muito tempo e adiciona-os a lista dos que saíram do ônibus"""
     for device in enter_devices.values():
-        if device.timeout():
-            exit_devices[device.mac_hash] = device
-            print(f'DISPOSITIVO: {device.mac_hash} REMOVIDO')
-            # Enviar infos para o banco de dados (assync de preferência)
+        if exit_devices.get(device.mac_hash) is None:
+            if device.timeout():
+                exit_devices[device.mac_hash] = device
+                print(f'DISPOSITIVO: {device.mac_hash} REMOVIDO')
+                # Enviar infos para o banco de dados (assync de preferência)
 
 def get_bus_ocupation(enter_devices: dict[str, Device], exit_devices: dict[str, Device]):
     """Envia para o banco de dados a lotação atual do ônibus"""

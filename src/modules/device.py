@@ -7,7 +7,7 @@ class Device:
     """Classe para criar dispositvos detecdados"""
 
     # Quantidade de segundos necessários para que um dispositivo seja considerado fora do ônibus
-    TIMEOUT_SECONDS = 30
+    TIMEOUT_SECONDS = 60
     
     def __init__(self, mac: str, first_seen: datetime):
         """Cria um objeto a partir do endereço MAC do dispositivo e da primeira vez que o dispositivo foi detectado em uma varredura"""
