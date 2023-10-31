@@ -12,7 +12,7 @@ from modules.gps_handler import get_gps_data
 from modules.system_killer import System_Killer
 from modules.log_handler import TCPDUMP_LOG, follow_tcpdump_log, extract_probe_request_frame
 from modules.device import Device
-from modules.mqtt_client_handler import publish_position, publish_num_passengers
+from modules.mqtt_client_handler import publish_position, publish_num_passengers, publish_gps_down
 
 
 POSITION_TIMER_SECONDS = 30
@@ -65,10 +65,14 @@ def position_ping():
                 sys.exit(0)
             sleep(POSITION_TIMER_SECONDS)
             gps_data = get_gps_data()
-            publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
+            if gps_data.status == True:
+                publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
+            else:
+                publish_gps_down()
         except KeyboardInterrupt:
             gps_data = get_gps_data()
-            publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
+            if gps_data.status == True:
+                publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
             if killer.kill_now:
                 sys.exit(0)
 

@@ -38,8 +38,8 @@ def publish_inactive_devices(inactive_devices):
     
     publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list, indent=4), 0)
 
-def pubish_3g_down():
+def publish_3g_down():
     publish_message(COLLECTION_MODULE_IP, 'local/3gdown', '1', 0)
 
-def pubish_gps_down():
+def publish_gps_down():
     publish_message(COLLECTION_MODULE_IP, 'local/gpsdown', '1', 0)
