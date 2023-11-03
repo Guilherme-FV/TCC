@@ -66,8 +66,7 @@ def position_ping():
             sleep(POSITION_TIMER_SECONDS)
             gps_data = get_gps_data()
             if gps_data.status == True:
-                # publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
-                publish_gps_down()
+                publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
             else:
                 publish_gps_down()
         except KeyboardInterrupt:
