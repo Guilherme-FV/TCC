@@ -42,13 +42,4 @@ def publish_3g_down():
     publish_message(COLLECTION_MODULE_IP, 'local/3gdown', '1', 0)
 
 def publish_gps_down():
-    client = paho.Client()
-    client.on_message = gps_down_receive
-    if client.connect(COLLECTION_MODULE_IP, 1883, 60) != 0:
-        print(f'Não foi possível se conectar ao broker MQTT {COLLECTION_MODULE_IP}')
-    client.publish('local/gpsdown', '1', 0)
-    client.subscribe('local/gpsdown')
-
-def gps_down_receive(client, userdata, message):
-    if message != '1':
-        print('Localização compartilhada pelo celular')
+    publish_message(COLLECTION_MODULE_IP, 'local/gpsdown', '1', 0)
