@@ -50,4 +50,5 @@ def publish_gps_down():
     client.subscribe('local/gpsdown')
 
 def gps_down_receive(client, userdata, message):
-    return None
+    if message != '1':
+        print('Localização compartilhada pelo celular')
