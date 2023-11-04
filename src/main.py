@@ -1,11 +1,10 @@
 from datetime import datetime
 from errno import EEXIST
-from os import makedirs, path
+from os import makedirs, path, environ
 from multiprocessing import Manager, Process
 import sys
 
 import modules
-
 
 if __name__ == "__main__":
     killer = modules.System_Killer()
@@ -17,7 +16,10 @@ if __name__ == "__main__":
             if exc.errno != EEXIST:
                 raise
 
-    # Requisitar ID do ônibus
+    if "BUSID" in environ:
+        BUS_ID = environ["BUSID"]
+    else:
+        BUS_ID = "Linha não identificada"
 
     enter_devices = Manager().dict()
     exit_devices = Manager().dict()
