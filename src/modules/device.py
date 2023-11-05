@@ -25,7 +25,7 @@ class Device:
             return True
         return False
     
-    def device_to_JSON(self) -> str:
+    def device_to_JSON(self) -> dict[str, str]:
         """Retorna todos os atributos do dispositivo em formato JSON"""
         attributes = {
             'mac_hash': self.__mac_hash,

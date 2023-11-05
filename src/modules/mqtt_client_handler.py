@@ -1,7 +1,10 @@
 from datetime import datetime
+from typing import List
 import paho.mqtt.client as paho
 import json
 import requests
+
+from modules.device import Device
 
 RECEIVING_MODULE_IP = '15.229.35.41'
 COLLECTION_MODULE_IP = 'localhost'
@@ -33,7 +36,7 @@ def publish_num_passengers(num_passengers: int, date_time: datetime):
     }
     publish_message(RECEIVING_MODULE_IP, 'num_passengers', json.dumps(num_passengers_package), 0)
 
-def publish_inactive_devices(inactive_devices):
+def publish_inactive_devices(inactive_devices: List[Device]):
     inactive_devices_list = []
     for device in inactive_devices:
         inactive_devices_list.append(device.device_to_JSON())
