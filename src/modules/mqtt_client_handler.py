@@ -61,3 +61,4 @@ def have_internet_connection():
 
 def publish_gps_down():
     publish_message(COLLECTION_MODULE_IP, 'local/gpsdown', '1', 0)
+    
