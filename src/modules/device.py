@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import sha256
 from modules.gps_handler import GPSHandler, get_gps_data
 
@@ -44,10 +44,11 @@ class Device:
         return attributes
     
     def seen(self, gps_semaphore):
-        self.last_seen = datetime.now()
-        gps_data = get_gps_data(gps_semaphore)
-        self.last_seen_position_latitude = gps_data.latitude
-        self.last_seen_position_longitude = gps_data.longitude
+        if (datetime.now() - self.last_seen) > timedelta(seconds=3):
+            self.last_seen = datetime.now()
+            gps_data = get_gps_data(gps_semaphore)
+            self.last_seen_position_latitude = gps_data.latitude
+            self.last_seen_position_longitude = gps_data.longitude
     
     @property
     def mac_hash(self) -> str:
