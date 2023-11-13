@@ -47,8 +47,7 @@ def live_device_scanner(enter_devices: dict[str, Device]):
         if frame:
             frame_mac_hash = sha256(frame[0].encode('utf-8')).hexdigest()
             if frame_mac_hash in enter_devices:
-                live_device = enter_devices[frame_mac_hash]
-                live_device.seen()
+                enter_devices[frame_mac_hash].seen()
                 print(f'DISPOSITIVO: {frame[0]} VISTO NOVAMENTE')
             else:
                 new_device = Device(frame[0], frame[1])
