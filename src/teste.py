@@ -1,17 +1,4 @@
-from time import sleep
-from modules.location_combinator import LocationCombinator
+from modules.mqtt_client_handler import publish_3g_down
 
 
-location_combinator = LocationCombinator('localhost', 'positionColab')
-
-location_combinator.start()
-
-for i in range(0, 20):
-    print(i)
-    sleep(1)
-
-location_combinator.stop()
-
-location_combinator.print_locations()
-
-print(location_combinator.combine_locations())
+publish_3g_down('position', 'msg de teste', 0)
