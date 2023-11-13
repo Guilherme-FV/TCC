@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import numpy as np
+import json
 
 class LocationCombinator:
     def __init__(self, broker_address, topic):
@@ -14,7 +15,9 @@ class LocationCombinator:
         # Esta função é chamada quando uma nova mensagem é recebida
         payload = message.payload.decode('utf-8')
         print(payload)
-        self.locations.append(payload)
+        payload_parsed = json.loads(payload)
+        location = (float(payload_parsed['latitude']), float(payload_parsed['longitude']))
+        self.locations.append(location)
         print(f"Nova mensagem recebida: {payload}")
 
     def combine_locations(self):
