@@ -37,7 +37,7 @@ def tcpdump_stop(tcpdump_process: Popen):
     except IOError:
         pass
 
-def live_device_scanner(enter_devices: dict[str, Device]):
+def live_device_scanner(enter_devices: dict[str, Device], gps_semaphore):
     """Varre constantemente o arquivo de log do tcpdump e cadastra/atualiza os dispositivos dentro do ônibus"""
     loglines = follow_tcpdump_log()
     tcpdump_process =  tcpdump_start()
@@ -49,17 +49,17 @@ def live_device_scanner(enter_devices: dict[str, Device]):
             if frame_mac_hash in enter_devices:
                 print(enter_devices[frame_mac_hash])
                 device = enter_devices[frame_mac_hash]
-                device.seen()
+                device.seen(gps_semaphore)
                 enter_devices[frame_mac_hash] = device
                 print(enter_devices[frame_mac_hash])
                 print(f'DISPOSITIVO: {frame[0]} VISTO NOVAMENTE')
             else:
-                new_device = Device(frame[0], frame[1])
+                new_device = Device(frame[0], frame[1], gps_semaphore)
                 enter_devices[new_device.mac_hash] = new_device
                 print(f'NOVO DISPOSITIVO: {frame[0]}')
     tcpdump_stop(tcpdump_process)
 
-def position_ping():
+def position_ping(gps_semaphore):
     """Obtém a localização e o datetime atual e envia as informações para o banco de dados"""
     killer = System_Killer()
     while True:
@@ -67,13 +67,13 @@ def position_ping():
             if killer.kill_now:
                 sys.exit(0)
             sleep(POSITION_TIMER_SECONDS)
-            gps_data = get_gps_data()
+            gps_data = get_gps_data(gps_semaphore)
             if gps_data.status == True:
                 publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
             else:
                 publish_gps_down()
         except KeyboardInterrupt:
-            gps_data = get_gps_data()
+            gps_data = get_gps_data(gps_semaphore)
             if gps_data.status == True:
                 publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
             if killer.kill_now:

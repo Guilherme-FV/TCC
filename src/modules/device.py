@@ -9,13 +9,13 @@ class Device:
     # Quantidade de segundos necessários para que um dispositivo seja considerado fora do ônibus
     TIMEOUT_SECONDS = 60
     
-    def __init__(self, mac: str, first_seen: datetime):
+    def __init__(self, mac: str, first_seen: datetime, gps_semaphore):
         """Cria um objeto a partir do endereço MAC do dispositivo e da primeira vez que o dispositivo foi detectado em uma varredura"""
         # Usando SHA256 para anonimizar o endereço MAC
         self.__mac_hash = sha256(mac.encode('utf-8')).hexdigest()
         self.__first_seen = first_seen
         self.__last_seen = first_seen
-        self.__first_seen_position = get_gps_data()
+        self.__first_seen_position = get_gps_data(gps_semaphore)
         self.__last_seen_position = self.first_seen_position
 
 
@@ -38,9 +38,9 @@ class Device:
         }
         return attributes
     
-    def seen(self):
+    def seen(self, gps_semaphore):
         self.last_seen = datetime.now()
-        self.last_seen_position = get_gps_data()
+        self.last_seen_position = get_gps_data(gps_semaphore)
     
     @property
     def mac_hash(self) -> str:

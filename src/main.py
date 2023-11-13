@@ -1,7 +1,7 @@
 from datetime import datetime
 from errno import EEXIST
 from os import makedirs, path, environ
-from multiprocessing import Manager, Process
+from multiprocessing import Manager, Process, Semaphore
 import sys
 
 import modules
@@ -23,12 +23,13 @@ if __name__ == "__main__":
 
     enter_devices = Manager().dict()
     exit_devices = Manager().dict()
+    gps_semaphore = Semaphore(1)
 
     position_timer = datetime.now()
     ocupation_timer = datetime.now()
 
-    device_scanner = Process(target=modules.live_device_scanner, args=(enter_devices,))
-    position_tracker = Process(target=modules.position_ping)
+    device_scanner = Process(target=modules.live_device_scanner, args=(enter_devices, gps_semaphore))
+    position_tracker = Process(target=modules.position_ping, args=(gps_semaphore,))
     ocupation_tracker = Process(target=modules.get_bus_ocupation, args=(enter_devices, exit_devices))
 
     device_scanner.start()
