@@ -15,8 +15,11 @@ class Device:
         self.__mac_hash = sha256(mac.encode('utf-8')).hexdigest()
         self.__first_seen = first_seen
         self.__last_seen = first_seen
-        self.__first_seen_position = get_gps_data(gps_semaphore)
-        self.__last_seen_position = self.first_seen_position
+        gps_data = get_gps_data(gps_semaphore)
+        self.__first_seen_position_latitude = gps_data.latitude
+        self.__first_seen_position_longitude = gps_data.longitude
+        self.__last_seen_position_latitude = gps_data.latitude
+        self.__last_seen_position_longitude = gps_data.longitude
 
 
     def timeout(self) -> bool:
@@ -33,14 +36,18 @@ class Device:
             'saida': str(self.__last_seen.strftime("%H:%M:%S")),
             'data_entrada': str(self.__first_seen.date()),
             'data_saida': str(self.__last_seen.date()),
-            'posicao_entrada': str(self.__first_seen_position),
-            'posicao_saida': str(self.__last_seen_position)
+            'posicao_entrada_latitude': str(self.__first_seen_position_latitude),
+            'posicao_entrada_longitude': str(self.__first_seen_position_longitude),
+            'posicao_saida_latitude': str(self.__last_seen_position_latitude),
+            'posicao_saida_longitude': str(self.__last_seen_position_longitude),
         }
         return attributes
     
     def seen(self, gps_semaphore):
         self.last_seen = datetime.now()
-        self.last_seen_position = get_gps_data(gps_semaphore)
+        gps_data = get_gps_data(gps_semaphore)
+        self.last_seen_position_latitude = gps_data.latitude
+        self.last_seen_position_longitude = gps_data.longitude
     
     @property
     def mac_hash(self) -> str:
@@ -63,19 +70,34 @@ class Device:
         self.__last_seen = new_last_seen
 
     @property
-    def first_seen_position(self) -> GPSHandler:
+    def first_seen_position_latitude(self) -> float:
         """Obtém a localização da primeira vez que o dispositivo foi detectado em uma varredura"""
         return self.__first_seen_position
     
     @property
-    def last_seen_position(self) -> GPSHandler:
+    def first_seen_position_longitude(self) -> float:
+        """Obtém a localização da primeira vez que o dispositivo foi detectado em uma varredura"""
+        return self.__first_seen_position
+    
+    @property
+    def last_seen_position_latitude(self) -> float:
         """Obtém a localização da última vez que o dispositivo foi detectado em uma varredura"""
         return self.__last_seen_position
     
-    @last_seen_position.setter
-    def last_seen_position(self, new_last_seen_position : GPSHandler):
+    @property
+    def last_seen_position_longitude(self) -> float:
+        """Obtém a localização da última vez que o dispositivo foi detectado em uma varredura"""
+        return self.__last_seen_position
+    
+    @last_seen_position_latitude.setter
+    def last_seen_position_latitude(self, new_last_seen_position_latitude : float):
         """Define a última vez que o dispositivo foi detectado em uma varredura"""
-        self.__last_seen_position = new_last_seen_position
+        self.last_seen_position_latitude = new_last_seen_position_latitude
+
+    @last_seen_position_longitude.setter
+    def last_seen_position_longitude(self, new_last_seen_position_longitude : float):
+        """Define a última vez que o dispositivo foi detectado em uma varredura"""
+        self.last_seen_position_longitude = new_last_seen_position_longitude
     
     
     def __str__(self) -> str:
