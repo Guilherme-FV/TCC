@@ -1,6 +1,7 @@
 from datetime import datetime
 from time import sleep
 from typing import List
+from os import environ
 import paho.mqtt.client as paho
 import json
 import requests
@@ -23,6 +24,7 @@ def publish_message(broker: str, topic: str, message: str, qos: int):
 
 def publish_position(latitude: float, longitude: float, gps_datetime: datetime):   
     position_package = {
+        'veiculo_id': environ["BUSID"],
         'latitude': str(latitude),
         'longitude': str(longitude),
         'data': str(gps_datetime.date()),
@@ -32,6 +34,7 @@ def publish_position(latitude: float, longitude: float, gps_datetime: datetime):
 
 def publish_num_passengers(num_passengers: int, date_time: datetime):
     num_passengers_package = {
+        'veiculo_id': environ["BUSID"],
         'lotacao': num_passengers,
         'data': str(date_time.date()),
         'tempo': str(date_time.time())
