@@ -40,7 +40,7 @@ class Device:
     
     def seen(self):
         self.last_seen = datetime.now()
-        self.last_seen_position = GPSHandler()#get_gps_data()
+        self.last_seen_position = get_gps_data()
     
     @property
     def mac_hash(self) -> str:
