@@ -19,7 +19,7 @@ if __name__ == "__main__":
     if "BUSID" in environ:
         BUS_ID = environ["BUSID"]
     else:
-        BUS_ID = "Linha não identificada"
+        BUS_ID = -1
 
     enter_devices = Manager().dict()
     exit_devices = Manager().dict()
