@@ -72,32 +72,32 @@ class Device:
     @property
     def first_seen_position_latitude(self) -> float:
         """Obtém a localização da primeira vez que o dispositivo foi detectado em uma varredura"""
-        return self.__first_seen_position
+        return self.__first_seen_position_latitude
     
     @property
     def first_seen_position_longitude(self) -> float:
         """Obtém a localização da primeira vez que o dispositivo foi detectado em uma varredura"""
-        return self.__first_seen_position
+        return self.__first_seen_position_longitude
     
     @property
     def last_seen_position_latitude(self) -> float:
         """Obtém a localização da última vez que o dispositivo foi detectado em uma varredura"""
-        return self.__last_seen_position
+        return self.__last_seen_position_latitude
     
     @property
     def last_seen_position_longitude(self) -> float:
         """Obtém a localização da última vez que o dispositivo foi detectado em uma varredura"""
-        return self.__last_seen_position
+        return self.__last_seen_position_longitude
     
     @last_seen_position_latitude.setter
     def last_seen_position_latitude(self, new_last_seen_position_latitude : float):
         """Define a última vez que o dispositivo foi detectado em uma varredura"""
-        self.last_seen_position_latitude = new_last_seen_position_latitude
+        self.__last_seen_position_latitude = new_last_seen_position_latitude
 
     @last_seen_position_longitude.setter
     def last_seen_position_longitude(self, new_last_seen_position_longitude : float):
         """Define a última vez que o dispositivo foi detectado em uma varredura"""
-        self.last_seen_position_longitude = new_last_seen_position_longitude
+        self.__last_seen_position_longitude = new_last_seen_position_longitude
     
     
     def __str__(self) -> str:
