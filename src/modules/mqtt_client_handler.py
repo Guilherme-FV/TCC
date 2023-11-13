@@ -28,7 +28,7 @@ def publish_position(latitude: float, longitude: float, gps_datetime: datetime):
         'latitude': str(latitude),
         'longitude': str(longitude),
         'data': str(gps_datetime.date()),
-        'tempo': str(gps_datetime.time())
+        'hora': str(gps_datetime.time())
     }
     publish_message(RECEIVING_MODULE_IP, 'position', json.dumps(position_package), 0)
 
@@ -37,7 +37,7 @@ def publish_num_passengers(num_passengers: int, date_time: datetime):
         'veiculo_id': environ["BUSID"],
         'lotacao': num_passengers,
         'data': str(date_time.date()),
-        'tempo': str(date_time.time())
+        'hora': str(date_time.time())
     }
     publish_message(RECEIVING_MODULE_IP, 'num_passengers', json.dumps(num_passengers_package), 0)
 

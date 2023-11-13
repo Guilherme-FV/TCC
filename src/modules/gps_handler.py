@@ -50,9 +50,9 @@ class GPSHandler:
 
 def get_gps_data(gps_semaphore) -> GPSHandler:
     with gps_semaphore:
+        gps_data = GPSHandler()
+        gps_serial = Serial("/dev/ttyAMA0", baudrate=9600, timeout=0.5)
         try:
-            gps_data = GPSHandler()
-            gps_serial = Serial("/dev/ttyAMA0", baudrate=9600, timeout=0.5)
             while True:
                 nmea_sentence = gps_serial.readline().decode('latin-1')
                 if nmea_sentence.startswith('$GPRMC'):
