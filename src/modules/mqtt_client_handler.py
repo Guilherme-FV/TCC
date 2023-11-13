@@ -5,6 +5,7 @@ import json
 import requests
 
 from modules.device import Device
+from modules.location_combinator import LocationCombinator
 
 RECEIVING_MODULE_IP = '15.229.35.41'
 COLLECTION_MODULE_IP = 'localhost'
@@ -48,7 +49,7 @@ def publish_3g_down(topic, message, qos):
         "message": message,
         "qos": qos
     }
-    publish_message(COLLECTION_MODULE_IP, 'local/3gdown', json.dumps(data), 0)
+    publish_message(COLLECTION_MODULE_IP, '3gdown', json.dumps(data), 0)
 
 def have_internet_connection():
     try:
@@ -60,5 +61,6 @@ def have_internet_connection():
     return False
 
 def publish_gps_down():
-    publish_message(COLLECTION_MODULE_IP, 'local/gpsdown', '1', 0)
+    publish_message(COLLECTION_MODULE_IP, 'gpsdown', '1', 0)
+   #message_collector = LocationCombinator(COLLECTION_MODULE_IP, 'positionColab')
     
