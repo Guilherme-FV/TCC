@@ -26,6 +26,7 @@ class LocationCombinator:
         longitudes = [coord[1] for coord in self.locations]
 
         combined_locations = {}
+        combined_locations['veiculo_id'] = environ["BUSID"]
         combined_locations['latitude'] = np.mean(latitudes)
         combined_locations['longitude'] = np.mean(longitudes)
 
