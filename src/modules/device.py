@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from hashlib import sha256
+from os import environ
 from modules.gps_handler import GPSHandler, get_gps_data
 
 
@@ -31,6 +32,7 @@ class Device:
     def device_to_JSON(self) -> dict[str, str]:
         """Retorna todos os atributos do dispositivo em formato JSON"""
         attributes = {
+            'veiculo_id': environ["BUSID"],
             'mac_hash': self.__mac_hash,
             'entrada': str(self.__first_seen.strftime("%H:%M:%S")),
             'saida': str(self.__last_seen.strftime("%H:%M:%S")),
