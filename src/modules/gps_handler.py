@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import serial
 from serial import Serial
 from pynmea2 import parse
 from multiprocessing import Process
@@ -61,5 +62,5 @@ def get_gps_data() -> GPSHandler:
                     gps_data.longitude = parsed_sentance.longitude
                     gps_data.date_time = datetime.combine(parsed_sentance.datestamp, parsed_sentance.timestamp) - timedelta(hours = 3)
                 return gps_data
-    except Serial.serialutil.SerialException:
+    except serial.SerialException:
         print('AAAAAAAAAAAAAAAAAAAAAAA')
