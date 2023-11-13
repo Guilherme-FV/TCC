@@ -2,7 +2,7 @@ from time import sleep
 from modules.location_combinator import LocationCombinator
 
 
-location_combinator = LocationCombinator()
+location_combinator = LocationCombinator('localhost', 'positionColab')
 
 location_combinator.start()
 
