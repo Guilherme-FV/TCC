@@ -14,21 +14,22 @@ class LocationCombinator:
     def on_message(self, client, userdata, message):
         # Esta função é chamada quando uma nova mensagem é recebida
         payload = message.payload.decode('utf-8')
-        print(payload)
         payload_parsed = json.loads(payload)
         location = (float(payload_parsed['latitude']), float(payload_parsed['longitude']))
         self.locations.append(location)
-        print(f"Nova mensagem recebida: {payload}")
 
     def combine_locations(self):
         if len(self.locations) == 0:
             return None
 
-        # Extrair latitudes e longitudes
         latitudes = [coord[0] for coord in self.locations]
         longitudes = [coord[1] for coord in self.locations]
 
-        return (np.mean(latitudes), np.mean(longitudes))
+        combined_locations = {}
+        combined_locations['latitude'] = np.mean(latitudes)
+        combined_locations['longitude'] = np.mean(longitudes)
+
+        return json.dumps(combined_locations)
         
 
     def start(self):

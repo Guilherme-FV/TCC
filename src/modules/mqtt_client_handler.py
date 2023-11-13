@@ -1,4 +1,5 @@
 from datetime import datetime
+from time import sleep
 from typing import List
 import paho.mqtt.client as paho
 import json
@@ -62,5 +63,8 @@ def have_internet_connection():
 
 def publish_gps_down():
     publish_message(COLLECTION_MODULE_IP, 'gpsdown', '1', 0)
-   #message_collector = LocationCombinator(COLLECTION_MODULE_IP, 'positionColab')
+    message_collector = LocationCombinator(COLLECTION_MODULE_IP, 'positionColab')
+    sleep(30)
+    if len(message_collector.locations) != 0:
+        publish_message(RECEIVING_MODULE_IP, 'position', message_collector.combine_locations, 0)
     
