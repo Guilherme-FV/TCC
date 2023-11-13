@@ -85,9 +85,9 @@ def live_devices_cleanup(enter_devices: dict[str, Device], exit_devices: dict[st
     for device in enter_devices.values():
         if exit_devices.get(device.mac_hash) is None:
             if device.timeout():
-                if device.first_seen == device.last_seen:
-                    del enter_devices[device.mac_hash]
-                    continue
+                # if device.first_seen == device.last_seen:
+                #     del enter_devices[device.mac_hash]
+                #     continue
                 exit_devices[device.mac_hash] = device
                 print(f'DISPOSITIVO: {device.mac_hash} REMOVIDO')
                 inactive_devices.append(device)
