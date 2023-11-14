@@ -50,11 +50,10 @@ def live_device_scanner(enter_devices: dict[str, Device], gps_semaphore):
                 device = enter_devices[frame_mac_hash]
                 device.seen(gps_semaphore)
                 enter_devices[frame_mac_hash] = device
-                print(f'DISPOSITIVO: {frame[0]} VISTO NOVAMENTE')
             else:
                 new_device = Device(frame[0], frame[1], gps_semaphore)
                 enter_devices[new_device.mac_hash] = new_device
-                print(f'NOVO DISPOSITIVO: {frame[0]}')
+                print(f'NOVO DISPOSITIVO: MAC ->{frame[0]} HASH -> {new_device.mac_hash}')
     tcpdump_stop(tcpdump_process)
 
 def position_ping(gps_semaphore):
