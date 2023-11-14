@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from hashlib import sha256
 from os import environ
 from modules.gps_handler import GPSHandler, get_gps_data
-
+import json
 
 class Device:
     """Classe para criar dispositvos detecdados"""
@@ -29,7 +29,7 @@ class Device:
             return True
         return False
     
-    def device_to_JSON(self) -> dict[str, str]:
+    def device_to_JSON(self) -> str:
         """Retorna todos os atributos do dispositivo em formato JSON"""
         attributes = {
             'veiculo_id': environ["BUSID"],
@@ -43,7 +43,7 @@ class Device:
             'posicao_saida_latitude': str(self.__last_seen_position_latitude),
             'posicao_saida_longitude': str(self.__last_seen_position_longitude),
         }
-        return attributes
+        return json.dumps(attributes)
     
     def seen(self, gps_semaphore):
         if (datetime.now() - self.last_seen) > timedelta(seconds=3):
