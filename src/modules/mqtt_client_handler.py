@@ -46,7 +46,7 @@ def publish_inactive_devices(inactive_devices: List[Device]):
     inactive_devices_list = []
     for device in inactive_devices:
         inactive_devices_list.append(device.device_to_JSON())
-    publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list), 0)
+    publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list, indent= 4), 0)
 
 def publish_3g_down(topic, message, qos):
     data = {
