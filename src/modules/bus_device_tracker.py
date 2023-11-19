@@ -16,7 +16,7 @@ from modules.mqtt_client_handler import publish_position, publish_num_passengers
 
 
 POSITION_TIMER_SECONDS = 30
-OCUPATION_TIMER_SECONDS = 45
+OCUPATION_TIMER_SECONDS = 20
 
 def tcpdump_start() -> Popen:
     """Inicia o processo do tcpdump direcionando seu output para o arquivo de log"""
