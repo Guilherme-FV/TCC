@@ -47,7 +47,8 @@ def publish_inactive_devices(inactive_devices: List[Device]):
     counter = 0
     for device in inactive_devices:
         inactive_devices_list['device' + str(counter)] = device.device_to_JSON()
-    publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list, indent=4), 0)
+        counter += 1
+    publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list), 0)
 
 def publish_3g_down(topic, message, qos):
     data = {
