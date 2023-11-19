@@ -36,7 +36,7 @@ if __name__ == "__main__":
     position_tracker.start()
     ocupation_tracker.start()
 
-    print('EXECUTANDO PROGRAMA')
+    print(f'{datetime.now().time()} EXECUTANDO PROGRAMA')
     
     while True:
         while killer.kill_now:

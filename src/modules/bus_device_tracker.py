@@ -87,7 +87,7 @@ def live_devices_cleanup(enter_devices: dict[str, Device], exit_devices: dict[st
                     del enter_devices[device.mac_hash]
                     continue
                 exit_devices[device.mac_hash] = device
-                print(f'DISPOSITIVO: {device.mac_hash} REMOVIDO')
+                print(f'{datetime.now().time()} DISPOSITIVO: {device.mac_hash} REMOVIDO')
                 inactive_devices.append(device)
     if len(inactive_devices) != 0:
         publish_inactive_devices(inactive_devices)

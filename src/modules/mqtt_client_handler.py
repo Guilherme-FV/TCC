@@ -39,6 +39,7 @@ def publish_num_passengers(num_passengers: int, date_time: datetime):
         'data': str(date_time.date()),
         'hora': str(date_time.time())
     }
+    print(f'{datetime.now().time()} ENVIANDO LOTAÇÃO: {num_passengers}')
     publish_message(RECEIVING_MODULE_IP, 'num_passengers', json.dumps(num_passengers_package), 0)
 
 def publish_inactive_devices(inactive_devices: List[Device]):
