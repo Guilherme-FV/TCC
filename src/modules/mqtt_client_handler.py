@@ -43,11 +43,9 @@ def publish_num_passengers(num_passengers: int, date_time: datetime):
     publish_message(RECEIVING_MODULE_IP, 'num_passengers', json.dumps(num_passengers_package), 0)
 
 def publish_inactive_devices(inactive_devices: List[Device]):
-    inactive_devices_list = {}
-    counter = 0
+    inactive_devices_list = []
     for device in inactive_devices:
-        inactive_devices_list['device' + str(counter)] = device.device_to_JSON()
-        counter += 1
+        inactive_devices_list.append(device.device_to_JSON())
     publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list), 0)
 
 def publish_3g_down(topic, message, qos):
