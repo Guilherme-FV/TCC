@@ -30,7 +30,7 @@ def publish_position(latitude: float, longitude: float, gps_datetime: datetime):
         'data': str(gps_datetime.date()),
         'hora': str(gps_datetime.time())
     }
-    print('Publicando localização fornecida pelo GPS embarcado')
+    print(f'{datetime.now().time()} Publicando localização fornecida pelo GPS embarcado')
     publish_message(RECEIVING_MODULE_IP, 'position', json.dumps(position_package), 0)
 
 def publish_num_passengers(num_passengers: int, date_time: datetime):
@@ -70,7 +70,7 @@ def publish_gps_down():
     publish_message(COLLECTION_MODULE_IP, 'gpsdown', '1', 0)
     print(f'{datetime.now().time()} PERDA DE SINAL DE GPS')
     message_collector = LocationCombinator(COLLECTION_MODULE_IP, 'positionColab')
-    sleep(30)
+    sleep(10)
     if len(message_collector.locations) != 0:
         print(f'{datetime.now().time()} Publicando localização fornecida pelo Módulo de colaboração')
         publish_message(RECEIVING_MODULE_IP, 'position', message_collector.calcular_media_cartesiana(), 0)
