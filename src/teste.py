@@ -1,36 +1,47 @@
-from math import radians, cos, sin, sqrt, atan2, degrees
+import json
 
-def calcular_media_cartesiana(localizacoes):
-    # Converter de latitude e longitude para coordenadas cartesianas
-    coordenadas_cartesianas = []
-    for lat, lon in localizacoes:
-        # Converter graus para radianos
-        lat_rad = radians(lat)
-        lon_rad = radians(lon)
+def escrever_em_json(dados, nome_arquivo):
+    with open(nome_arquivo, 'w') as arquivo:
+        json.dump(dados, arquivo, indent=4)
 
-        # Raio da Terra em km
-        raio_terra = 6371.0
 
-        # Converter para coordenadas cartesianas
-        x = raio_terra * cos(lat_rad) * cos(lon_rad)
-        y = raio_terra * cos(lat_rad) * sin(lon_rad)
-        coordenadas_cartesianas.append((x, y))
+def ler_arquivo_json(nome_arquivo):
+    with open(nome_arquivo, 'r') as arquivo:
+        mensagens = json.load(arquivo)[0]['messages']
+        dados = []
+        for mensagem in mensagens:
+            if mensagem['topic'] == 'num_passengers':
+                conteudo = json.loads(mensagem['payload'])
+                info_mensagem = {
+                    'topico': 'num_passengers',
+                    'veiculo_id': conteudo['veiculo_id'],
+                    'lotacao': conteudo['lotacao'],
+                    'data': conteudo['data'],
+                    'hora': conteudo['hora']
+                }
+                dados.append(info_mensagem)
+                
+            if mensagem['topic'] == 'exit_devices':
+                conteudo = json.loads(mensagem['payload'])
+                for device in conteudo:
+                    json_device = json.loads(device)
+                    print(json_device['posicao_entrada_latitude'])
+                    info_mensagem = {
+                        'topico': 'exit_devices',
+                        'veiculo_id': json_device['veiculo_id'],
+                        'mac_hash': json_device['mac_hash'],
+                        'entrada': json_device['entrada'],
+                        'saida': json_device['saida'],
+                        'data_entrada': json_device['data_entrada'],
+                        'data_saida': json_device['data_saida'],
+                        'posicao_entrada_latitude': json_device['posicao_entrada_latitude'],
+                        'posicao_entrada_longitude': json_device['posicao_entrada_longitude'],
+                        'posicao_saida_latitude': json_device['posicao_saida_latitude'],
+                        'posicao_saida_longitude': json_device['posicao_saida_longitude']
+                    }
+                    dados.append(info_mensagem)
+        return dados
 
-    # Calcular a média das coordenadas cartesianas
-    media_x = sum(x for x, _ in coordenadas_cartesianas) / len(coordenadas_cartesianas)
-    media_y = sum(y for _, y in coordenadas_cartesianas) / len(coordenadas_cartesianas)
-
-    # Converter a média de volta para latitude e longitude
-    media_lon = atan2(media_y, media_x)
-    media_lat = atan2(sqrt(media_x ** 2 + media_y ** 2), raio_terra)
-
-    # Converter de radianos para graus
-    media_lat = degrees(media_lat)
-    media_lon = degrees(media_lon)
-
-    return media_lat, media_lon
-
-# Exemplo de uso
-localizacoes = [(37.42, -122.08), (-27.61, -48.58)]
-media = calcular_media_cartesiana(localizacoes)
-print(f"A média cartesiana das localizações é: {media}")
+nome_do_arquivo = 'src/ModRecbTeste1.json'
+dados_json = ler_arquivo_json(nome_do_arquivo)
+escrever_em_json(dados_json, 'testeaaaaaaaaa.json')
