@@ -30,6 +30,7 @@ def publish_position(latitude: float, longitude: float, gps_datetime: datetime):
         'data': str(gps_datetime.date()),
         'hora': str(gps_datetime.time())
     }
+    print('Publicando localização fornecida pelo GPS embarcado')
     publish_message(RECEIVING_MODULE_IP, 'position', json.dumps(position_package), 0)
 
 def publish_num_passengers(num_passengers: int, date_time: datetime):
@@ -39,14 +40,14 @@ def publish_num_passengers(num_passengers: int, date_time: datetime):
         'data': str(date_time.date()),
         'hora': str(date_time.time())
     }
-    print(f'{datetime.now().time()} ENVIANDO LOTAÇÃO: {num_passengers}')
+    # print(f'{datetime.now().time()} ENVIANDO LOTAÇÃO: {num_passengers}')
     publish_message(RECEIVING_MODULE_IP, 'num_passengers', json.dumps(num_passengers_package), 0)
 
 def publish_inactive_devices(inactive_devices: List[Device]):
     inactive_devices_list = []
     for device in inactive_devices:
         inactive_devices_list.append(device.device_to_JSON())
-    publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list, indent= 4), 0)
+    publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list), 0)
 
 def publish_3g_down(topic, message, qos):
     data = {
@@ -67,8 +68,10 @@ def have_internet_connection():
 
 def publish_gps_down():
     publish_message(COLLECTION_MODULE_IP, 'gpsdown', '1', 0)
+    print(f'{datetime.now().time()} PERDA DE SINAL DE GPS')
     message_collector = LocationCombinator(COLLECTION_MODULE_IP, 'positionColab')
     sleep(30)
     if len(message_collector.locations) != 0:
-        publish_message(RECEIVING_MODULE_IP, 'position', message_collector.combine_locations, 0)
+        print(f'{datetime.now().time()} Publicando localização fornecida pelo Módulo de colaboração')
+        publish_message(RECEIVING_MODULE_IP, 'position', message_collector.combine_locations(), 0)
     

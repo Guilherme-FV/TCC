@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import numpy as np
 import json
+from os import environ
 
 class LocationCombinator:
     def __init__(self, broker_address, topic):
