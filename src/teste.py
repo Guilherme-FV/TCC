@@ -55,6 +55,6 @@ def ler_arquivo_json_mod_receb(nome_arquivo):
 
         return dados
 
-nome_do_arquivo = 'src/ModRecbTeste1.json'
+nome_do_arquivo = 'src\Mod Recebimento Teste 2.json'
 dados_json = ler_arquivo_json_mod_receb(nome_do_arquivo)
 escrever_em_json(dados_json, 'testeaaaaaaaaa.json')

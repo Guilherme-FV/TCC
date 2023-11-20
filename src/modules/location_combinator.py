@@ -3,6 +3,7 @@ import numpy as np
 import json
 from os import environ
 from math import radians, cos, sin, sqrt, atan2, degrees
+from datetime import datetime
 
 class LocationCombinator:
     def __init__(self, broker_address, topic):
@@ -65,10 +66,13 @@ class LocationCombinator:
         media_lat = degrees(media_lat)
         media_lon = degrees(media_lon)
 
-        combined_locations = {}
-        combined_locations['veiculo_id'] = environ["BUSID"]
-        combined_locations['latitude'] = media_lat
-        combined_locations['longitude'] = media_lon
+        combined_locations = {
+            'veiculo_id': environ["BUSID"],
+            'latitude': str(media_lat),
+            'longitude': str(media_lon),
+            'data': str(datetime.now().date()),
+            'hora': str(datetime.now().time())
+        }
 
         return json.dumps(combined_locations)
         
