@@ -57,6 +57,7 @@ def get_gps_data(gps_semaphore) -> GPSHandler:
                 nmea_sentence = gps_serial.readline().decode('latin-1')
                 if nmea_sentence.startswith('$GPRMC'):
                     parsed_sentance = parse(nmea_sentence)
+                    print(f'SINAL DE GPS {parsed_sentance.status}')
                     gps_data.status = parsed_sentance.status
                     if gps_data.status:
                         gps_data.latitude = parsed_sentance.latitude
