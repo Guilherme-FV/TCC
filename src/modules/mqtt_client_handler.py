@@ -71,7 +71,9 @@ def publish_gps_down():
     print(f'{datetime.now().time()} PERDA DE SINAL DE GPS')
     message_collector = LocationCombinator(COLLECTION_MODULE_IP, 'positionColab')
     sleep(10)
+    print(f'FIM DO INTERVALO DE COLETA DE COLABORAÇÕES: {len(message_collector.locations)} colaborações recebidas')
     if len(message_collector.locations) != 0:
-        print(f'{datetime.now().time()} Publicando localização fornecida pelo Módulo de colaboração')
+        print(f'{datetime.now().time()} Publicando localização fornecida pelo Módulo de colaboração: {message_collector.calcular_media_cartesiana()}')
         publish_message(RECEIVING_MODULE_IP, 'position', message_collector.calcular_media_cartesiana(), 0)
+        message_collector.stop()
     

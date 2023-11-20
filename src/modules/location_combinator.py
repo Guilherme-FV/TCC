@@ -12,11 +12,13 @@ class LocationCombinator:
 
         self.client = mqtt.Client()
         self.client.on_message = self.on_message
+        self.start()
 
     def on_message(self, client, userdata, message):
         # Esta função é chamada quando uma nova mensagem é recebida
         payload = message.payload.decode('utf-8')
         payload_parsed = json.loads(payload)
+        print('Localização fornecida pelo módulo de colaboração' + str(payload_parsed['latitude']) + str(payload_parsed['longitude']))
         location = (float(payload_parsed['latitude']), float(payload_parsed['longitude']))
         self.locations.append(location)
 
