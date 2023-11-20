@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import numpy as np
 import json
 from os import environ
+from math import radians, cos, sin, sqrt, atan2, degrees
 
 class LocationCombinator:
     def __init__(self, broker_address, topic):
@@ -30,6 +31,42 @@ class LocationCombinator:
         combined_locations['veiculo_id'] = environ["BUSID"]
         combined_locations['latitude'] = np.mean(latitudes)
         combined_locations['longitude'] = np.mean(longitudes)
+
+        return json.dumps(combined_locations)
+    
+    def calcular_media_cartesiana(self):
+        # Converter de latitude e longitude para coordenadas cartesianas
+        localizacoes = self.locations
+        coordenadas_cartesianas = []
+        for lat, lon in localizacoes:
+            # Converter graus para radianos
+            lat_rad = radians(lat)
+            lon_rad = radians(lon)
+
+            # Raio da Terra em km
+            raio_terra = 6371.0
+
+            # Converter para coordenadas cartesianas
+            x = raio_terra * cos(lat_rad) * cos(lon_rad)
+            y = raio_terra * cos(lat_rad) * sin(lon_rad)
+            coordenadas_cartesianas.append((x, y))
+
+        # Calcular a média das coordenadas cartesianas
+        media_x = sum(x for x, _ in coordenadas_cartesianas) / len(coordenadas_cartesianas)
+        media_y = sum(y for _, y in coordenadas_cartesianas) / len(coordenadas_cartesianas)
+
+        # Converter a média de volta para latitude e longitude
+        media_lon = atan2(media_y, media_x)
+        media_lat = atan2(sqrt(media_x ** 2 + media_y ** 2), raio_terra)
+
+        # Converter de radianos para graus
+        media_lat = degrees(media_lat)
+        media_lon = degrees(media_lon)
+
+        combined_locations = {}
+        combined_locations['veiculo_id'] = environ["BUSID"]
+        combined_locations['latitude'] = media_lat
+        combined_locations['longitude'] = media_lon
 
         return json.dumps(combined_locations)
         

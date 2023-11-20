@@ -73,5 +73,5 @@ def publish_gps_down():
     sleep(30)
     if len(message_collector.locations) != 0:
         print(f'{datetime.now().time()} Publicando localização fornecida pelo Módulo de colaboração')
-        publish_message(RECEIVING_MODULE_IP, 'position', message_collector.combine_locations(), 0)
+        publish_message(RECEIVING_MODULE_IP, 'position', message_collector.calcular_media_cartesiana(), 0)
     
