@@ -40,6 +40,16 @@ class LocationCombinator:
     def calcular_media_cartesiana(self):
         # Converter de latitude e longitude para coordenadas cartesianas
         localizacoes = self.locations
+        if len(localizacoes) == 1:
+            combined_locations = {
+                'veiculo_id': environ["BUSID"],
+                'latitude': localizacoes[0][0],
+                'longitude': localizacoes[0][1],
+                'data': str(datetime.now().date()),
+                'hora': str(datetime.now().time())
+            }
+
+            return json.dumps(combined_locations)
         coordenadas_cartesianas = []
         for lat, lon in localizacoes:
             # Converter graus para radianos
