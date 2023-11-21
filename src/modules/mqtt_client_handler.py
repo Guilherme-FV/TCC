@@ -58,7 +58,7 @@ def publish_3g_down(topic, message, qos):
         "message": message,
         "qos": qos
     }
-    print(f'{datetime.now().time()} Enviando solicitação de envio da mensagem: {data}')
+    print(f'{datetime.now().time()} Enviando solicitação de publicação de uma mensagem no tópico: {topic}')
     publish_message(COLLECTION_MODULE_IP, '3gdown', json.dumps(data), 0)
 
 def have_internet_connection():
