@@ -54,7 +54,51 @@ def ler_arquivo_json_mod_receb(nome_arquivo):
             #         dados.append(info_mensagem)
 
         return dados
+    
 
-nome_do_arquivo = 'src\Mod Recebimento Teste 2.json'
-dados_json = ler_arquivo_json_mod_receb(nome_do_arquivo)
+def ler_arquivo_json_mod_coleta(nome_arquivo):
+    with open(nome_arquivo, 'r') as arquivo:
+        mensagens = json.load(arquivo)[0]['messages']
+        dados = []
+        for mensagem in mensagens:
+            if mensagem['topic'] == 'gpsdown':
+                info_mensagem = {
+                    'topico': 'gpsdown',
+                    'conteudo': mensagem['payload']
+                }
+                dados.append(info_mensagem)
+
+            if mensagem['topic'] == 'positionColab':
+                conteudo = json.loads(mensagem['payload'])
+                info_mensagem = {
+                    'topico': 'positionColab',
+                    'latitude': str(conteudo['latitude']),
+                    'longitude': str(conteudo['longitude'])
+                }
+                dados.append(info_mensagem)
+                
+            # if mensagem['topic'] == 'exit_devices':
+            #     conteudo = json.loads(mensagem['payload'])
+            #     for device in conteudo:
+            #         json_device = json.loads(device)
+            #         print(json_device['posicao_entrada_latitude'])
+            #         info_mensagem = {
+            #             'topico': 'exit_devices',
+            #             'veiculo_id': json_device['veiculo_id'],
+            #             'mac_hash': json_device['mac_hash'],
+            #             'entrada': json_device['entrada'],
+            #             'saida': json_device['saida'],
+            #             'data_entrada': json_device['data_entrada'],
+            #             'data_saida': json_device['data_saida'],
+            #             'posicao_entrada_latitude': json_device['posicao_entrada_latitude'],
+            #             'posicao_entrada_longitude': json_device['posicao_entrada_longitude'],
+            #             'posicao_saida_latitude': json_device['posicao_saida_latitude'],
+            #             'posicao_saida_longitude': json_device['posicao_saida_longitude']
+            #         }
+            #         dados.append(info_mensagem)
+
+        return dados
+
+nome_do_arquivo = 'src/MQTT Mod Coleta Teste 2.json'
+dados_json = ler_arquivo_json_mod_coleta(nome_do_arquivo)
 escrever_em_json(dados_json, 'testeaaaaaaaaa.json')

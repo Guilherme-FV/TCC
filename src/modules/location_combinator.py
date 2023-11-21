@@ -19,7 +19,7 @@ class LocationCombinator:
         # Esta função é chamada quando uma nova mensagem é recebida
         payload = message.payload.decode('utf-8')
         payload_parsed = json.loads(payload)
-        print('Localização fornecida pelo módulo de colaboração' + str(payload_parsed['latitude']) + str(payload_parsed['longitude']))
+        # print('Localização fornecida pelo módulo de colaboração' + str(payload_parsed['latitude']) + str(payload_parsed['longitude']))
         location = (float(payload_parsed['latitude']), float(payload_parsed['longitude']))
         self.locations.append(location)
 

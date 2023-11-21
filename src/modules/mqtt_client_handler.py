@@ -16,8 +16,11 @@ def publish_message(broker: str, topic: str, message: str, qos: int):
     client = paho.Client()
     if client.connect(broker, 1883, 60) != 0:
         print(f'Não foi possível se conectar ao broker MQTT {broker}')
-        if broker == RECEIVING_MODULE_IP and have_internet_connection():
-            publish_3g_down(topic, message, qos)
+
+    if broker == RECEIVING_MODULE_IP and not have_internet_connection():
+        publish_3g_down(topic, message, qos)
+        client.disconnect()
+        return
     
     client.publish(topic, message, qos)
     client.disconnect()
@@ -30,7 +33,7 @@ def publish_position(latitude: float, longitude: float, gps_datetime: datetime):
         'data': str(gps_datetime.date()),
         'hora': str(gps_datetime.time())
     }
-    print(f'{datetime.now().time()} Publicando localização fornecida pelo GPS embarcado')
+    # print(f'{datetime.now().time()} Publicando localização fornecida pelo GPS embarcado')
     publish_message(RECEIVING_MODULE_IP, 'position', json.dumps(position_package), 0)
 
 def publish_num_passengers(num_passengers: int, date_time: datetime):
@@ -50,11 +53,13 @@ def publish_inactive_devices(inactive_devices: List[Device]):
     publish_message(RECEIVING_MODULE_IP, 'exit_devices', json.dumps(inactive_devices_list), 0)
 
 def publish_3g_down(topic, message, qos):
+    print(f'{datetime.now().time()} Sem conexão com a internet')
     data = {
         "topic": topic,
         "message": message,
         "qos": qos
     }
+    print(f'{datetime.now().time()} Enviando solicitação de envio da mensagem: {data}')
     publish_message(COLLECTION_MODULE_IP, '3gdown', json.dumps(data), 0)
 
 def have_internet_connection():
@@ -68,12 +73,12 @@ def have_internet_connection():
 
 def publish_gps_down():
     publish_message(COLLECTION_MODULE_IP, 'gpsdown', '1', 0)
-    print(f'{datetime.now().time()} PERDA DE SINAL DE GPS')
+    # print(f'{datetime.now().time()} PERDA DE SINAL DE GPS')
     message_collector = LocationCombinator(COLLECTION_MODULE_IP, 'positionColab')
     sleep(10)
-    print(f'FIM DO INTERVALO DE COLETA DE COLABORAÇÕES: {len(message_collector.locations)} colaborações recebidas')
+    # print(f'FIM DO INTERVALO DE COLETA DE COLABORAÇÕES: {len(message_collector.locations)} colaborações recebidas')
     if len(message_collector.locations) != 0:
-        print(f'{datetime.now().time()} Publicando localização fornecida pelo Módulo de colaboração: {message_collector.calcular_media_cartesiana()}')
+        # print(f'{datetime.now().time()} Publicando localização fornecida pelo Módulo de colaboração: {message_collector.calcular_media_cartesiana()}')
         publish_message(RECEIVING_MODULE_IP, 'position', message_collector.calcular_media_cartesiana(), 0)
         message_collector.stop()
     
