@@ -71,9 +71,9 @@ def position_ping(gps_semaphore):
             else:
                 publish_gps_down()
         except KeyboardInterrupt:
-            gps_data = get_gps_data(gps_semaphore)
-            if gps_data.status == True:
-                publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
+            # gps_data = get_gps_data(gps_semaphore)
+            # if gps_data.status == True:
+            #     publish_position(gps_data.latitude, gps_data.longitude, gps_data.date_time)
             if killer.kill_now:
                 sys.exit(0)
 
@@ -104,8 +104,8 @@ def get_bus_ocupation(enter_devices: dict[str, Device], exit_devices: dict[str, 
             bus_ocupation = len(enter_devices) - len(exit_devices)
             publish_num_passengers(bus_ocupation, datetime.now())
         except KeyboardInterrupt:
-            live_devices_cleanup(enter_devices, exit_devices)
-            bus_ocupation = len(enter_devices) - len(exit_devices)
-            publish_num_passengers(bus_ocupation, datetime.now())
+            # live_devices_cleanup(enter_devices, exit_devices)
+            # bus_ocupation = len(enter_devices) - len(exit_devices)
+            # publish_num_passengers(bus_ocupation, datetime.now())
             if killer.kill_now:
                 sys.exit(0)
