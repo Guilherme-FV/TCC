@@ -16,7 +16,7 @@ def publish_message(broker: str, topic: str, message: str, qos: int):
     client = paho.Client()
     if client.connect(broker, 1883, 60) != 0:
         print(f'Não foi possível se conectar ao broker MQTT {broker}')
-
+    print(broker, have_internet_connection())
     if broker == RECEIVING_MODULE_IP and not have_internet_connection():
         publish_3g_down(topic, message, qos)
         client.disconnect()
