@@ -22,20 +22,6 @@ class LocationCombinator:
         # print('Localização fornecida pelo módulo de colaboração' + str(payload_parsed['latitude']) + str(payload_parsed['longitude']))
         location = (float(payload_parsed['latitude']), float(payload_parsed['longitude']))
         self.locations.append(location)
-
-    def combine_locations(self):
-        if len(self.locations) == 0:
-            return None
-
-        latitudes = [coord[0] for coord in self.locations]
-        longitudes = [coord[1] for coord in self.locations]
-
-        combined_locations = {}
-        combined_locations['veiculo_id'] = environ["BUSID"]
-        combined_locations['latitude'] = np.mean(latitudes)
-        combined_locations['longitude'] = np.mean(longitudes)
-
-        return json.dumps(combined_locations)
     
     def calcular_media_cartesiana(self):
         # Converter de latitude e longitude para coordenadas cartesianas

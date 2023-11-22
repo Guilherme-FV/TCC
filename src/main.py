@@ -36,21 +36,18 @@ if __name__ == "__main__":
     position_tracker.start()
     ocupation_tracker.start()
 
-    print(f'{datetime.now().time()} EXECUTANDO PROGRAMA')
+    print(f'{datetime.now().time()} EXECUTANDO O PROGRAMA')
     
     while True:
         while killer.kill_now:
-            print('TERMINANDO O PROGRAMA...')
+            print('ENCERRANDO O PROGRAMA...')
             device_scanner.terminate()
-            print('TERMINANDO O DEVICE...')
+            print('ENCERRANDO A CONTAGEM DE DISPOSITIVOS...')
             device_scanner.join()
-            print('DEVICE TERMINADO')
             position_tracker.terminate()
-            print('TERMINANDO O POSITION...')
+            print('ENCERRANDO RASTREAMENTO DO VEÍCULO...')
             position_tracker.join()
-            print('POSITION TERMINADO')
             ocupation_tracker.terminate()
-            print('TERMINANDO O OCUPATION...')
+            print('ENCERRANDO MONITORAMENTO DA LOTAÇÃO...')
             ocupation_tracker.join()
-            print('OCUPATION TERMINADO')
             sys.exit(0)
