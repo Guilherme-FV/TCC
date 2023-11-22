@@ -14,12 +14,18 @@ COLLECTION_MODULE_IP = 'localhost'
 
 def publish_message(broker: str, topic: str, message: str, qos: int):
     client = paho.Client()
-    if client.connect(broker, 1883, 60) != 0:
-        print(f'Não foi possível se conectar ao broker MQTT {broker}')
-    if broker == RECEIVING_MODULE_IP and not have_internet_connection():
-        publish_3g_down(topic, message, qos)
-        client.disconnect()
-        return
+    try:
+        if client.connect(broker, 1883, 60) != 0:
+            print(f'Não foi possível se conectar ao broker MQTT {broker}')
+        if broker == RECEIVING_MODULE_IP and not have_internet_connection():
+            publish_3g_down(topic, message, qos)
+            client.disconnect()
+            return
+    except Exception:
+        if broker == RECEIVING_MODULE_IP and not have_internet_connection():
+            publish_3g_down(topic, message, qos)
+            client.disconnect()
+            return
     
     client.publish(topic, message, qos)
     client.disconnect()
